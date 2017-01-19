@@ -1,15 +1,14 @@
 var express = require('express');
 var app = express();
-var path = require("path");
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database(path.join(__dirname+'/public/db/database.db'));
+var db = new sqlite3.Database(__dirname+ '/public/db/database.db');
 var bodyParser = require('body-parser');
 var unique = require('array-unique');
 
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname+'/views/index.html'))
+    res.sendFile(__dirname + '/views/index.html')
 });
 
 app.get('/makers', function(req, res) {
