@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var unique = require('array-unique');
 
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/views/index.html')
