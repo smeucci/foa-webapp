@@ -1,0 +1,83 @@
+<html>
+    <head>
+        <title>foa-webapp</title>
+        <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"/></script>
+    </head>
+    <body>
+
+        <select id="sel-makers">
+            <option value="Any">Any</option>
+        </select>
+
+        <select id="sel-models">
+            <option value="any">Any</option>
+        </select>
+
+        <select id="sel-os">
+            <option value="Any">Any</option>
+        </select>
+
+        <script>
+            $(document).ready(function () {
+                $.get('/makers', function (data) {
+                    $.each(data, (i, item) => {
+                        $('#sel-makers').append($('<option>', {
+                            value: item,
+                            text: item
+                        }))
+                    })
+                })
+            })
+
+            $('#sel-makers').change(function() {
+                var maker = $( "#sel-makers option:selected" ).val();
+                $('#sel-models')
+                    .children()
+                    .remove()
+                    .end()
+                    .append($('<option>', {
+                        value: 'Any',
+                        text: 'Any'
+                }));
+                $('#sel-os')
+                    .children()
+                    .remove()
+                    .end()
+                    .append($('<option>', {
+                        value: 'Any',
+                        text: 'Any'
+                }));
+                $.post('/models', {maker: maker}, function (data) {
+                    $.each(data, (i, item) => {
+                        $('#sel-models').append($('<option>', {
+                            value: item.model,
+                            text: item.model
+                        }))
+                    })
+                })
+            });
+
+            $('#sel-models').change(function() {
+                var maker = $( "#sel-makers option:selected" ).val();
+                var model = $( "#sel-models option:selected" ).val();
+                $('#sel-os')
+                    .children()
+                    .remove()
+                    .end()
+                    .append($('<option>', {
+                        value: 'Any',
+                        text: 'Any'
+                }));
+                $.post('/os', {maker: maker, model: model}, function (data) {
+                    $.each(data, (i, item) => {
+                        $('#sel-os').append($('<option>', {
+                            value: item.name + "-" + item.version,
+                            text: item.name + " " + item.version
+                        }))
+                    })
+                })
+            });
+        </script>
+
+    </body>
+</html
