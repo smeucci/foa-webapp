@@ -1,6 +1,5 @@
 
-node_modules/*
-!node_modules/.keep
+/node_modules/**
 
 *.*~
 *.db
