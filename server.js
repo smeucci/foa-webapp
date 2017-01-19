@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database(__dirname+ '/public/db/database.db');
+var db = new sqlite3.Database(__dirname + '/public/db/database.db');
 var bodyParser = require('body-parser');
 var unique = require('array-unique');
 
