@@ -18,9 +18,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/makers', dropdown.getMakers);
-
 app.post('/models', dropdown.getModels);
-
 app.post('/os', dropdown.getOS);
 
 app.listen(port, function () {
