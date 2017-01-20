@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <title>foa-webapp</title>
+        <!-- CSS -->
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="/css/app.css">
+        <!-- JS -->
+        <script src="/js/jquery-3.1.1.min.js" type="text/javascript"/></script>
+        <script src="/js/bootstrap.min.js" type="text/javascript"/></script>
+        <script src="/js/app.js" type="text/javascript"/></script>
+    </head>
+    <body onload="loadMakers(); selectedClass()">
+
+        <div class="container">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#">Classify</a></li>
+                <li role="presentation"><a href="#">Compare</a></li>
+              </ul>
+            <div class="jumbotron">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label for="sel-makers">Select Maker:</label>
+                        <select class="form-control selector" id="sel-makers" onchange="loadModels(); selectedClass()">
+                            <option value="Any">Any</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="sel-models">Select Model:</label>
+                        <select class="form-control selector" id="sel-models" onchange="loadOS(); selectedClass()">
+                            <option value="Any">Any</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="sel-os">Select OS:</label>
+                        <select class="form-control selector" id="sel-os" onchange="selectedClass()">
+                            <option value="Any">Any</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="well">
+                    <p id="output"></p>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
