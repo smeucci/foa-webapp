@@ -5,12 +5,12 @@ var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database(__dirname + '/sqlite/database.db');
 
 module.exports = {
-    getMakers,
-    getModels,
-    getOS
+    selectMakers,
+    selectModels,
+    selectOS
 };
 
-function getMakers (callback) {
+function selectMakers (callback) {
     var makers = []
     var query = "SELECT DISTINCT maker FROM DeviceModel"
     db.all(query, function (e, r) {
@@ -20,10 +20,9 @@ function getMakers (callback) {
     });
 }
 
-function getModels (req, callback) {
-    var maker = req.body.maker
+function selectModels (data, callback) {
     var models = []
-    var query = "SELECT model FROM DeviceModel WHERE maker = '" + maker + "'"
+    var query = "SELECT model FROM DeviceModel WHERE maker = '" + data.maker + "'"
     db.all(query, function (e, r) {
         if (e) { callback(e); return; }
         r.forEach(function (item, i) { models.push({value: item.model, text: item.model}) })
@@ -31,13 +30,12 @@ function getModels (req, callback) {
     });
 }
 
-function getOS (req, callback) {
-    var maker = req.body.maker
-    var model = req.body.model
+function selectOS (data, callback) {
     var os = []
     var query = "SELECT * FROM OperatingSystem WHERE id IN "
                 + "(SELECT operating_system FROM VideoFile WHERE device_model = "
-                + "(SELECT id FROM DeviceModel WHERE maker = '" + maker + "' AND model = '" + model + "'))"
+                + "(SELECT id FROM DeviceModel "
+                + "WHERE maker = '" + data.maker + "' AND model = '" + data.model + "'))"
     db.all(query, function (e, r) {
         if (e) { callback(e); return; }
         r.forEach(function (item, i) {
