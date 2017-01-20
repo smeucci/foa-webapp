@@ -17,17 +17,11 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/app/views/index.html')
 });
 
-app.get('/makers', function (req, res) {
-    dropdown.getMakers(req, res)
-});
+app.get('/makers', dropdown.getMakers);
 
-app.post('/models', function (req, res) {
-    dropdown.getModels(req, res)
-});
+app.post('/models', dropdown.getModels);
 
-app.post('/os', function (req, res) {
-    dropdown.getOS(req, res)
-});
+app.post('/os', dropdown.getOS);
 
 app.listen(port, function () {
     console.log('Listening on port ' + port + '...');
