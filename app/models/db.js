@@ -8,31 +8,28 @@ var db = new sqlite3.Database(__dirname + '/sqlite/database.db');
 
 // functions
 function selectMakers () {
-    var makers = [];
     var query = "SELECT DISTINCT maker FROM DeviceModel";
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { callback(err); return; }
-            res.forEach(function (item, i) { makers.push({ value: item.maker, text: item.maker }) });
+            var makers = res.map(r => ({value: r.maker, text: r.maker}))
             return resolve(makers);
         });
     })
 }
 
 function selectModels (data) {
-    var models = [];
     var query = "SELECT model FROM DeviceModel WHERE maker = '" + data.maker + "'";
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { callback(err); return; }
-            res.forEach(function (item, i) { models.push({ value: item.model, text: item.model }) });
+            var models = res.map(r => ({value: r.model, text: r.model}))
             return resolve(models);
         });
     })
 }
 
 function selectOS (data) {
-    var os = [];
     var query = "SELECT * FROM OperatingSystem WHERE id IN "
                 + "(SELECT operating_system FROM VideoFile WHERE device_model = "
                 + "(SELECT id FROM DeviceModel "
@@ -40,9 +37,7 @@ function selectOS (data) {
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { callback(err); return; }
-            res.forEach(function (item, i) {
-                os.push({ value: item.name + "-" + item.version, text: item.name + " " + item.version });
-            });
+            var os = res.map(r => ({ value: r.name + "-" + r.version, text: r.name + " " + r.version }))
             return resolve(os);
         });
     })
