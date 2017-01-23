@@ -2,8 +2,8 @@
   "name": "foa-webapp",
   "version": "0.0.1",
   "scripts": {
-    "start": "node --harmony-async-await server.js",
-    "dev": "nodemon --harmony-async-await server.js"
+    "start": "node --harmony server.js",
+    "dev": "nodemon --harmony server.js"
   },
   "dependencies": {
     "asyncawait": "^1.0.6",
