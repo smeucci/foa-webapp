@@ -2,33 +2,30 @@
 // dropdown.js
 // ==========
 
+// require
 var db = require(__dirname + '/../models/db.js');
 
+// functions
+async function getMakers (req, res) {
+    var makers = await db.selectMakers();
+    res.status(202).json(makers);
+}
+
+async function getModels (req, res) {
+    var data = { maker: req.body.maker };
+    var models = await db.selectModels(data);
+    res.status(202).json(models);
+}
+
+async function getOS (req, res) {
+    var data = { maker: req.body.maker, model: req.body.model };
+    var os = await db.selectOS(data);
+    res.status(202).json(os);
+}
+
+// exports
 module.exports = {
     getMakers,
     getModels,
     getOS
-}
-
-function getMakers (req, res) {
-    db.selectMakers(function (err, makers) {
-        if (err) { callback(err); return; }
-        res.status(202).json(makers);
-    })
-}
-
-function getModels (req, res) {
-    var data = {maker: req.body.maker}
-    db.selectModels(data, function (err, models) {
-        if (err) { callback(err); return; }
-        res.status(202).json(models)
-    })
-}
-
-function getOS (req, res) {
-    var data = {maker: req.body.maker, model: req.body.model}
-    db.selectOS(data, function (err, os) {
-        if (err) { callback(err); return; }
-        res.status(202).json(os)
-    })
-}
+};

@@ -1,16 +1,18 @@
-// npm modules
+// =========
+// server.js
+// =========
+
+// require
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-var multer = require('multer')
+var multer = require('multer');
 var unique = require('array-unique');
-var port = process.env.PORT || 3000
-
-// internal modules
 var dropdown = require(__dirname + '/app/controllers/dropdown.js');
+var port = process.env.PORT || 3000;
 
 // settings
-app.use(multer({dest: './app/uploads/'}).any());
+app.use(multer({dest: __dirname + '/app/uploads/'}).any());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + '/public'));
 
@@ -24,10 +26,11 @@ app.post('/models', dropdown.getModels);
 app.post('/os', dropdown.getOS);
 app.post('/upload', function (req, res) {
     console.log(req.files)
-})
+});
 
 app.listen(port, function () {
     console.log('Listening on port ' + port + '...');
 });
 
-module.exports = app
+// exports
+module.exports = app;
