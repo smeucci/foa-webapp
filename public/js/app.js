@@ -15,33 +15,83 @@ function resetSelect(id) {
          .append($('<option>', { value: 'Any', text: 'Any'}));
 }
 
-function loadMakers() {
-    $.get('/makers', function (data) {
-        appendOption('#sel-makers', data);
+function loadBrands() {
+    $.get('/brands', function (data) {
+        appendOption('#sel-brands', data);
     });
 }
 
 function loadModels() {
-    var maker = $( "#sel-makers option:selected" ).val();
+    var brand = $( "#sel-brands option:selected" ).val();
     resetSelect('#sel-models');
     resetSelect('#sel-os');
-    $.post('/models', {maker: maker}, function (data) {
+    $.get('/models', {brand: brand}, function (data) {
         appendOption('#sel-models', data);
     });
 }
 
 function loadOS() {
-    var maker = $( "#sel-makers option:selected" ).val();
+    var brand = $( "#sel-brands option:selected" ).val();
     var model = $( "#sel-models option:selected" ).val();
     resetSelect('#sel-os');
-    $.post('/os', {maker: maker, model: model}, function (data) {
+    $.get('/os', {brand: brand, model: model}, function (data) {
         appendOption('#sel-os', data);
     });
 }
 
 function selectedClass() {
-    var maker = $( "#sel-makers option:selected" ).val();
+    var brand = $( "#sel-brands option:selected" ).val();
     var model = $( "#sel-models option:selected" ).val();
     var os = $( "#sel-os option:selected" ).val();
-    $('#output').text("Class: " + maker + ", " + model + ", " + os);
+    $('#output').text("Class: " + brand + ", " + model + ", " + os);
 }
+
+
+//TODO refactor
+function resetProgressBar () {
+    $('#upload-input').click();
+    $('.progress-bar').text('0%');
+    $('.progress-bar').width('0%');
+};
+
+function upload () {
+
+  var files = $('#upload-input').get(0).files;
+
+  if (files.length > 0){
+    var formData = new FormData();
+
+    for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+      formData.append('uploads[]', file, file.name);
+    }
+
+    $.ajax({
+      url: '/upload',
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function(data){
+          console.log('upload successful!\n' + data);
+      },
+      xhr: function() {
+        var xhr = new XMLHttpRequest();
+        xhr.upload.addEventListener('progress', function(evt) {
+          if (evt.lengthComputable) {
+            var percentComplete = evt.loaded / evt.total;
+            percentComplete = parseInt(percentComplete * 100);
+
+            $('.progress-bar').text(percentComplete + '%');
+            $('.progress-bar').width(percentComplete + '%');
+
+            if (percentComplete === 100) {
+              $('.progress-bar').html('Done');
+            }
+          }
+        }, false);
+        return xhr;
+      }
+    });
+  }
+};

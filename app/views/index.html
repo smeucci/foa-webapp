@@ -10,7 +10,7 @@
         <script src="/js/bootstrap.min.js" type="text/javascript"/></script>
         <script src="/js/app.js" type="text/javascript"/></script>
     </head>
-    <body onload="loadMakers(); selectedClass()">
+    <body onload="loadBrands(); selectedClass()">
 
         <div class="container">
             <ul class="nav nav-tabs" role="tablist">
@@ -20,8 +20,8 @@
             <div class="jumbotron">
                 <div class="row">
                     <div class="col-md-2">
-                        <label for="sel-makers">Select Maker:</label>
-                        <select class="form-control selector" id="sel-makers" onchange="loadModels(); selectedClass()">
+                        <label for="sel-brands">Select Brand:</label>
+                        <select class="form-control selector" id="sel-brands" onchange="loadModels(); selectedClass()">
                             <option value="Any">Any</option>
                         </select>
                     </div>
@@ -37,18 +37,28 @@
                             <option value="Any">Any</option>
                         </select>
                     </div>
-                </div>
-                <div class="well">
-                    <p id="output"></p>
-                </div>
-                <form role="form" action="/upload" method="post" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label> Upload video </label>
-                        <input type="file" name="myfile" id="myfile"/>
-                        <input type="submit" value="Upload photo">
+                    <div class="well col-md-6">
+                        <p id="output"></p>
                     </div>
-                </form>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <h2>Upload file</h2>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar"></div>
+                                </div>
+                                <button class="btn btn-lg upload-btn" type="button" onclick="resetProgressBar()">Upload File</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input id="upload-input" type="file" name="uploads[]" multiple="multiple" onchange="upload()"></br>
+
             </div>
+
         </div>
 
     </body>
