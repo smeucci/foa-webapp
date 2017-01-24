@@ -1,16 +1,19 @@
 // ==================
-// test - server.js
+// test - dropdown.js
 // ==================
 
-var expect    = require("chai").expect;
+// require
+var fs = require('fs');
+var path = require('path');
 var request = require("request");
+var expect    = require("chai").expect;
 
 // tests
 describe("Select dropdown options API", function() {
 
     describe("/GET brands", function() {
         var url = "http://localhost:3000/brands";
-        it("returns status 200", function(done) {
+        it("return status 200", function(done) {
             request(url, function(error, response, body) {
                 expect(response.statusCode).to.equal(200);
                 done();
@@ -29,7 +32,7 @@ describe("Select dropdown options API", function() {
 
     describe("/GET models", function() {
         var url = "http://localhost:3000/models?brand=Samsung";
-        it("returns status 200", function(done) {
+        it("return status 200", function(done) {
             request(url, function(error, response, body) {
                 expect(response.statusCode).to.equal(200);
                 done();
@@ -47,7 +50,7 @@ describe("Select dropdown options API", function() {
 
     describe("/GET os", function() {
         var url = "http://localhost:3000/os?brand=Samsung&model=GalaxyS3";
-        it("returns status 200", function(done) {
+        it("return status 200", function(done) {
             request(url, function(error, response, body) {
                 expect(response.statusCode).to.equal(200);
                 done();
@@ -61,22 +64,5 @@ describe("Select dropdown options API", function() {
             });
         });
     });
-
-});
-
-describe("Upload file API", function () {
-
-    describe("/POST upload", function () {
-
-        var url = "http://localhost:3000/upload";
-        it("returns status 200", function() {
-
-        });
-
-        it("upload a file to /uploads folder", function() {
-
-        })
-
-    })
 
 });
