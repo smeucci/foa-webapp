@@ -60,7 +60,6 @@ function upload () {
 
   if (files.length > 0){
     var formData = new FormData();
-
     for (var i = 0; i < files.length; i++) {
       var file = files[i];
       formData.append('uploads[]', file, file.name);
@@ -73,7 +72,7 @@ function upload () {
       processData: false,
       contentType: false,
       success: function(data){
-          console.log('upload successful!\n' + data);
+          console.log('upload: ' + data);
       },
       xhr: function() {
         var xhr = new XMLHttpRequest();

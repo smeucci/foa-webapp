@@ -3,7 +3,8 @@
 // ==========
 
 // require
-var db = require(__dirname + '/../models/db');
+var path = require('path');
+var db = require(path.join(__dirname, '/../models/db'));
 
 // functions
 var getBrands = async function(req, res) {

@@ -3,9 +3,9 @@
 // =========
 
 // require
+var fs = require('fs');
 var path = require('path');
 var formidable = require('formidable');
-var fs = require('fs');
 
 // functions
 function upload (req, res) {
