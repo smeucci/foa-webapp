@@ -7,19 +7,19 @@ var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database(__dirname + '/sqlite/database.db');
 
 // functions
-function selectMakers () {
-    var query = "SELECT DISTINCT maker FROM DeviceModel";
+function selectBrands () {
+    var query = "SELECT DISTINCT brand FROM DeviceModel";
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { callback(err); return; }
-            var makers = res.map(r => ({value: r.maker, text: r.maker}))
-            return resolve(makers);
+            var brands = res.map(r => ({value: r.brand, text: r.brand}))
+            return resolve(brands);
         });
     })
 }
 
 function selectModels (data) {
-    var query = "SELECT model FROM DeviceModel WHERE maker = '" + data.maker + "'";
+    var query = "SELECT model FROM DeviceModel WHERE brand = '" + data.brand + "'";
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { callback(err); return; }
@@ -33,7 +33,7 @@ function selectOS (data) {
     var query = "SELECT * FROM OperatingSystem WHERE id IN "
                 + "(SELECT operating_system FROM VideoFile WHERE device_model = "
                 + "(SELECT id FROM DeviceModel "
-                + "WHERE maker = '" + data.maker + "' AND model = '" + data.model + "'))";
+                + "WHERE brand = '" + data.brand + "' AND model = '" + data.model + "'))";
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { callback(err); return; }
@@ -45,7 +45,7 @@ function selectOS (data) {
 
 // exports
 module.exports = {
-    selectMakers,
+    selectBrands,
     selectModels,
     selectOS
 };

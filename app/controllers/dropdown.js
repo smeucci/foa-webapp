@@ -3,29 +3,29 @@
 // ==========
 
 // require
-var db = require(__dirname + '/../models/db.js');
+var db = require(__dirname + '/../models/db');
 
 // functions
-var getMakers = async function(req, res) {
-    var makers = await db.selectMakers();
-    res.status(202).json(makers);
+var getBrands = async function(req, res) {
+    var brands = await db.selectBrands();
+    res.json(brands);
 }
 
 var getModels = async function (req, res) {
-    var data = { maker: req.body.maker };
+    var data = { brand: req.query.brand };
     var models = await db.selectModels(data);
-    res.status(202).json(models);
+    res.json(models);
 }
 
 var getOS = async function (req, res) {
-    var data = { maker: req.body.maker, model: req.body.model };
+    var data = { brand: req.query.brand, model: req.query.model };
     var os = await db.selectOS(data);
-    res.status(202).json(os);
+    res.json(os);
 }
 
 // exports
 module.exports = {
-    getMakers,
+    getBrands,
     getModels,
     getOS
 };
