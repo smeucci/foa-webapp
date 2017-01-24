@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "scripts": {
     "start": "node --harmony server.js",
-    "dev": "nodemon --harmony server.js"
+    "dev": "nodemon --harmony server.js",
+    "test": "./node_modules/.bin/mocha --harmony --reporter spec"
   },
   "dependencies": {
     "asyncawait": "^1.0.6",
@@ -11,13 +12,18 @@
     "body-parser": "^1.16.0",
     "child_process": "^1.0.2",
     "ejs": "^2.5.5",
-    "pug": "latest",
     "express": "latest",
+    "formidable": "^1.1.1",
     "multer": "^1.2.1",
+    "pug": "latest",
     "sqlite": "^2.2.4",
     "sqlite3": "^3.1.8"
   },
   "devDependencies": {
-    "nodemon": "^1.11.0"
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "nodemon": "^1.11.0",
+    "request": "^2.79.0",
+    "supertest": "^2.0.1"
   }
 }
