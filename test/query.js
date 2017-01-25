@@ -9,13 +9,14 @@ var request = require("request");
 var expect    = require("chai").expect;
 
 // tests
-describe("Upload file API", function () {
+describe("Query API", function () {
 
-    describe("/POST upload", function () {
-        var url = "http://localhost:3000/upload";
+    var url = "http://localhost:3000/query";
+    var filename = '0002.mp4.xml'
+    var resultFilename = path.join(__dirname, '../app/uploads/', filename)
+
+    describe("/POST query", function () {
         it("return status 200", function(done) {
-            var filename = '0001.mp4.xml'
-            var resultFilename = path.join(__dirname, '../app/uploads/', filename)
             var formData = {file: fs.createReadStream(path.join(__dirname, '/uploads/', filename))};
             request.post({url: url, formData: formData}, function (error, response, body) {
                 expect(response.statusCode).to.equal(200)
@@ -23,19 +24,25 @@ describe("Upload file API", function () {
                 done()
             })
         });
+    });
 
+    describe("/POST query (upload phase)", function () {
         it("upload a file to /uploads folder", function(done) {
-            var filename = '0002.mp4.xml'
-            var resultFilename = path.join(__dirname, '../app/uploads/', filename)
             var formData = {file: fs.createReadStream(path.join(__dirname, '/uploads/', filename))};
             request.post({url: url, formData: formData}, function (error, response, body) {
                 var result = false
                 if (fs.existsSync(resultFilename)) {result = true}
-                expect(body).to.equal("success")
+                expect(body).to.equal("true")
                 expect(result).to.equal(true)
                 fs.unlink(resultFilename, function () {})
                 done()
             })
+        });
+    });
+
+    describe("/POST query (run phase)", function () {
+        it("run the query and return likelihood", function() {
+
         });
     });
 

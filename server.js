@@ -9,7 +9,7 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var unique = require('array-unique');
 var dropdown = require(path.join(__dirname, '/app/controllers/dropdown'));
-var upload = require(path.join(__dirname, '/app/controllers/upload'));
+var query = require(path.join(__dirname, '/app/controllers/query'));
 var port = process.env.PORT || 3000;
 
 // settings
@@ -18,13 +18,14 @@ app.use(express.static(path.join(__dirname, '/public')));
 
 // functions
 app.get('/', function (req, res) {
+    console.log(req.ip)
     res.sendFile(path.join(__dirname, '/app/views/index.html'))
 });
 
 app.get('/brands', dropdown.getBrands);
 app.get('/models', dropdown.getModels);
 app.get('/os', dropdown.getOS);
-app.post('/upload', upload.upload);
+app.post('/query', query.run);
 
 app.listen(port, function () {
     console.log('Listening on port ' + port + '...');
