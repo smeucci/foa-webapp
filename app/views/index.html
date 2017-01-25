@@ -37,16 +37,13 @@
                             <option value="Any">Any</option>
                         </select>
                     </div>
-                    <div class="well col-md-6">
-                        <p id="output"></p>
-                    </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-xs-6">
+                    <div class="col-xs-4">
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                <h2>Upload file</h2>
+                                <label>Upload file</label>
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar"></div>
                                 </div>
@@ -54,7 +51,12 @@
                             </div>
                         </div>
                     </div>
+                    <div class="well col-md-6">
+                        <p id="output"></p>
+                    </div>
                 </div>
+                <div id="warning" class="alert alert-warning" role="alert">Too many file selected</div>
+
                 <input id="upload-input" type="file" name="uploads[]" multiple="multiple" onchange="upload()"></br>
 
             </div>

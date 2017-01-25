@@ -52,45 +52,48 @@ function resetProgressBar () {
     $('#upload-input').click();
     $('.progress-bar').text('0%');
     $('.progress-bar').width('0%');
-};
+    document.getElementById("warning").style.display = "none";
+}
 
 function upload () {
-
   var files = $('#upload-input').get(0).files;
 
-  if (files.length > 0){
-    var formData = new FormData();
-    for (var i = 0; i < files.length; i++) {
-      var file = files[i];
-      formData.append('uploads[]', file, file.name);
-    }
-
-    $.ajax({
-      url: '/upload',
-      type: 'POST',
-      data: formData,
-      processData: false,
-      contentType: false,
-      success: function(data){
-          console.log('upload: ' + data);
-      },
-      xhr: function() {
-        var xhr = new XMLHttpRequest();
-        xhr.upload.addEventListener('progress', function(evt) {
-          if (evt.lengthComputable) {
-            var percentComplete = evt.loaded / evt.total;
-            percentComplete = parseInt(percentComplete * 100);
-
-            $('.progress-bar').text(percentComplete + '%');
-            $('.progress-bar').width(percentComplete + '%');
-
-            if (percentComplete === 100) {
-              $('.progress-bar').html('Done');
-            }
-          }
-        }, false);
-        return xhr;
-      }
-    });
+  // limit max number of files that can be uploaded per time
+  if (files.length > 3) {
+      document.getElementById("warning").style.display = "block";
+      $('#upload-input').value = '';
+      return;
   }
-};
+
+  if (files.length > 0) {
+      var formData = new FormData();
+      for (var i = 0; i < files.length; i++) {
+          var file = files[i];
+          formData.append('uploads[]', file, file.name);
+      }
+      $.post({
+          url: '/query',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function (data){ console.log('Upload success: ' + data); },
+          xhr: function () {
+              var xhr = new XMLHttpRequest();
+              xhr.upload.addEventListener('progress', function(evt) {
+                  if (evt.lengthComputable) {
+                      var percentComplete = evt.loaded / evt.total;
+                      percentComplete = parseInt(percentComplete * 100);
+
+                      $('.progress-bar').text(percentComplete + '%');
+                      $('.progress-bar').width(percentComplete + '%');
+
+                      if (percentComplete === 100) {
+                          $('.progress-bar').html('Done');
+                      }
+                  }
+              }, false);
+              return xhr;
+          }
+      });
+    }
+}
