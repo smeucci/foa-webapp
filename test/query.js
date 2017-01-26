@@ -19,7 +19,7 @@ describe("Query API", function () {
             var formData = {file: fs.createReadStream(path.join(__dirname, '/uploads/', filename))};
             request.post({url: url, formData: formData}, function (error, response, body) {
                 var body = JSON.parse(body);
-                var resultFolder = path.join(__dirname, '../app/uploads/', body.random, '/');
+                var resultFolder = path.join(__dirname, '../app/uploads/', body.folder, '/');
                 expect(response.statusCode).to.equal(200);
                 fs.removeSync(resultFolder)
                 done()
@@ -33,7 +33,7 @@ describe("Query API", function () {
             request.post({url: url, formData: formData}, function (error, response, body) {
                 var result = false;
                 var body = JSON.parse(body);
-                var resultFolder = path.join(__dirname, '../app/uploads/', body.random, '/')
+                var resultFolder = path.join(__dirname, '../app/uploads/', body.folder, '/')
                 if (fs.existsSync(path.join(resultFolder, filename))) {result = true}
                 expect(body.success).to.equal(true)
                 expect(result).to.equal(true)

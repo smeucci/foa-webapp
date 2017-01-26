@@ -8,11 +8,11 @@ var path = require('path');
 var formidable = require('formidable');
 
 // functions
-function upload (req, random) {
+function upload (req, folder) {
     return new Promise ( function (resolve, reject) {
         var form = new formidable.IncomingForm();
         form.multiples = true;
-        form.uploadDir = path.join(__dirname, '../uploads/', random);
+        form.uploadDir = path.join(__dirname, '../uploads/', folder);
         fs.mkdirSync(form.uploadDir);
 
         form.on('file', function(field, file) {
