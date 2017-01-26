@@ -12,7 +12,7 @@ var expect    = require("chai").expect;
 describe("Query API", function () {
 
     var url = "http://localhost:3000/query";
-    var filename = '0002.mp4.xml'
+    var filename = 'test.xml'
     var resultFilename = path.join(__dirname, '../app/uploads/', filename)
 
     describe("/POST query", function () {
