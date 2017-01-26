@@ -76,7 +76,7 @@ function upload () {
           data: formData,
           processData: false,
           contentType: false,
-          success: function (data){ console.log('Upload success: ' + data); },
+          success: function (data){ console.log('Upload success: ' + data.success); },
           xhr: function () {
               var xhr = new XMLHttpRequest();
               xhr.upload.addEventListener('progress', function(evt) {
