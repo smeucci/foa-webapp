@@ -3,7 +3,7 @@
 // ==================
 
 // require
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
 var request = require("request");
 var expect    = require("chai").expect;
@@ -12,15 +12,16 @@ var expect    = require("chai").expect;
 describe("Query API", function () {
 
     var url = "http://localhost:3000/query";
-    var filename = 'test.xml'
-    var resultFilename = path.join(__dirname, '../app/uploads/', filename)
+    var filename = 'test.xml';
 
     describe("/POST query", function () {
         it("return status 200", function(done) {
             var formData = {file: fs.createReadStream(path.join(__dirname, '/uploads/', filename))};
             request.post({url: url, formData: formData}, function (error, response, body) {
-                expect(response.statusCode).to.equal(200)
-                fs.unlink(resultFilename, function () {})
+                var body = JSON.parse(body);
+                var resultFolder = path.join(__dirname, '../app/uploads/', body.random, '/');
+                expect(response.statusCode).to.equal(200);
+                fs.removeSync(resultFolder)
                 done()
             })
         });
@@ -30,11 +31,13 @@ describe("Query API", function () {
         it("upload a file to /uploads folder", function(done) {
             var formData = {file: fs.createReadStream(path.join(__dirname, '/uploads/', filename))};
             request.post({url: url, formData: formData}, function (error, response, body) {
-                var result = false
-                if (fs.existsSync(resultFilename)) {result = true}
-                expect(body).to.equal("true")
+                var result = false;
+                var body = JSON.parse(body);
+                var resultFolder = path.join(__dirname, '../app/uploads/', body.random, '/')
+                if (fs.existsSync(path.join(resultFolder, filename))) {result = true}
+                expect(body.success).to.equal(true)
                 expect(result).to.equal(true)
-                fs.unlink(resultFilename, function () {})
+                fs.removeSync(resultFolder)
                 done()
             })
         });
