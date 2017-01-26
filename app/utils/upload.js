@@ -3,16 +3,17 @@
 // =========
 
 // require
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
 var formidable = require('formidable');
 
 // functions
-function upload (req) {
+function upload (req, random) {
     return new Promise ( function (resolve, reject) {
         var form = new formidable.IncomingForm();
         form.multiples = true;
-        form.uploadDir = path.join(__dirname, '../uploads');
+        form.uploadDir = path.join(__dirname, '../uploads/', random);
+        fs.mkdirSync(form.uploadDir);
 
         form.on('file', function(field, file) {
             fs.rename(file.path, path.join(form.uploadDir, file.name), function () {});
