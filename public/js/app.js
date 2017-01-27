@@ -46,27 +46,40 @@ function selectedClass() {
     $('#output').text("Class: " + brand + ", " + model + ", " + os);
 }
 
-
-//TODO refactor
 function resetProgressBar () {
     $('#upload-input').click();
     $('.progress-bar').text('0%');
     $('.progress-bar').width('0%');
+    $('#files').text('No file chosen');
     document.getElementById("warning").style.display = "none";
+}
+
+function displayFiles () {
+    var files = $('#upload-input').get(0).files;
+    // limit max number of files that can be uploaded per time
+    if (files.length > 3) { //TODO change max
+        document.getElementById("warning").style.display = "block";
+    } else if (files.length == 1) {
+        $('#files').text(files[0].name);
+    } else if (files.length > 1 && files.length <= 3){
+        $('#files').text(files.length + ' files');
+    }
 }
 
 function upload () {
   var files = $('#upload-input').get(0).files;
 
   // limit max number of files that can be uploaded per time
-  if (files.length > 3) {
-      document.getElementById("warning").style.display = "block";
-      $('#upload-input').value = '';
-      return;
-  }
+  if (files.length > 3) { $('#upload-input').value = ''; return; }
+
+  var brand = $( "#sel-brands option:selected" ).val();
+  var model = $( "#sel-models option:selected" ).val();
+  var os = $( "#sel-os option:selected" ).val();
+  var device = '{ "brand": "' + brand + '", ' + '"model": "' + model + '", "os": "' + os + '"}';
 
   if (files.length > 0) {
       var formData = new FormData();
+      formData.append('class', device)
       for (var i = 0; i < files.length; i++) {
           var file = files[i];
           formData.append('uploads[]', file, file.name);
@@ -74,9 +87,10 @@ function upload () {
       $.post({
           url: '/query',
           data: formData,
+          mimeType:'multipart/form-data',
           processData: false,
           contentType: false,
-          success: function (data){ console.log('Upload success: ' + data.success); },
+          success: function (data) { console.log('Upload success: ' + data.success); },
           xhr: function () {
               var xhr = new XMLHttpRequest();
               xhr.upload.addEventListener('progress', function(evt) {

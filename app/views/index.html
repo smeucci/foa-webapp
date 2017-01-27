@@ -3,7 +3,6 @@
         <title>foa-webapp</title>
         <!-- CSS -->
         <link rel="stylesheet" href="/css/bootstrap.min.css">
-        <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
         <link rel="stylesheet" href="/css/app.css">
         <!-- JS -->
         <script src="/js/jquery-3.1.1.min.js" type="text/javascript"/></script>
@@ -13,54 +12,84 @@
     <body onload="loadBrands(); selectedClass()">
 
         <div class="container">
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#">Classify</a></li>
-                <li role="presentation"><a href="#">Compare</a></li>
-              </ul>
-            <div class="jumbotron">
-                <div class="row">
-                    <div class="col-md-2">
-                        <label for="sel-brands">Select Brand:</label>
-                        <select class="form-control selector" id="sel-brands" onchange="loadModels(); selectedClass()">
-                            <option value="Any">Any</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="sel-models">Select Model:</label>
-                        <select class="form-control selector" id="sel-models" onchange="loadOS(); selectedClass()">
-                            <option value="Any">Any</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label for="sel-os">Select OS:</label>
-                        <select class="form-control selector" id="sel-os" onchange="selectedClass()">
-                            <option value="Any">Any</option>
-                        </select>
-                    </div>
+            <nav class="navbar navbar-inverse bg-inverse">
+                <div class="container-fluid">
+                    <div class="collapse navbar-collapse">
+                        <ul class="nav navbar-nav">
+                            <li class="active"><a href="/">Classify</a></li>
+                            <li><a href="#">Compare</a></li>
+                            <li><a href="#">About</a></li>
+                   </div>
                 </div>
-
+            </nav>
+            <div id="myjumbotron" class="jumbotron">
                 <div class="row">
-                    <div class="col-xs-4">
-                        <div class="panel panel-default">
+                    <!-- CLASS PANEL -->
+                    <div class="col-xs-3 col-md-3">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Class</h3>
+                            </div>
                             <div class="panel-body">
-                                <label>Upload file</label>
-                                <div class="progress">
-                                    <div class="progress-bar" role="progressbar"></div>
+                                <div class="selector">
+                                    <label for="sel-brands">Brand:</label>
+                                    <select class="form-control selector" id="sel-brands" onchange="loadModels(); selectedClass()">
+                                        <option value="Any">Any</option>
+                                    </select>
                                 </div>
-                                <button class="btn btn-lg upload-btn" type="button" onclick="resetProgressBar()">Upload File</button>
+                                <div class="selector">
+                                    <label for="sel-models">Model:</label>
+                                    <select class="form-control selector" id="sel-models" onchange="loadOS(); selectedClass()">
+                                        <option value="Any">Any</option>
+                                    </select>
+                                </div>
+                                <div class="selector">
+                                    <label for="sel-os">Operating System:</label>
+                                    <select class="form-control selector" id="sel-os" onchange="selectedClass()">
+                                        <option value="Any">Any</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="well col-md-6">
-                        <p id="output"></p>
+                    <!-- UPLOAD PANEL -->
+                    <div class="col-xs-3 col-md-3">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                               <h3 class="panel-title">Upload</h3>
+                            </div>
+                            <div class="panel-body">
+                                <label for="upload-btn">Select Video/XML:</label>
+                                <div>
+                                    <button class="btn btn-sm btn-primary upload-btn" type="button" onclick="resetProgressBar()">Upload</button>
+                                    <span id="files">No file chosen</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar"></div>
+                                </div>
+                                <label for="jar-btn">Download vft-parse.jar:</label>
+                                <div class="jar">
+                                    <button class="btn btn-sm btn-primary jar-btn" type="button">Download</button>
+                                </div>
+                                <div id="warning" class="alert alert-danger" role="alert">Too many file selected. Max is 3.</div>
+                                <input id="upload-input" type="file" name="uploads[]" multiple="multiple" onchange="displayFiles()"></br>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- OUTPUT PANEL -->
+                    <div class="col-xs-6 col-md-6">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                               <h3 class="panel-title">Output</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div id="output" class="well well-lg">...</div>
+                                <button class="btn btn-lg btn-danger query-btn" type="button" onclick="upload()">Run query</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div id="warning" class="alert alert-warning" role="alert">Too many file selected</div>
-
-                <input id="upload-input" type="file" name="uploads[]" multiple="multiple" onchange="upload()"></br>
-
             </div>
-
         </div>
 
     </body>
