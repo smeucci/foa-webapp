@@ -19,13 +19,17 @@ function upload (req, folder) {
             fs.rename(file.path, path.join(form.uploadDir, file.name), function () {});
         });
 
+        form.on('field', function(field, value) {
+            form.fields = JSON.parse(value);
+        });
+
         form.on('error', function(err) {
             console.log('An error has occured: ' + err);
-            return resolve(false)
+            return resolve(false);
         });
 
         form.on('end', function() {
-            return resolve(true)
+            return resolve({success: true, class: form.fields});
         });
 
         form.parse(req);
