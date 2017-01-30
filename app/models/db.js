@@ -44,9 +44,37 @@ function selectOS (data) {
     })
 }
 
+function selectClassA (data) {
+    var data = parseData(data);
+    var query = " SELECT pathtoxml FROM VideoFile WHERE"
+              + " device_model in (SELECT id FROM DeviceModel WHERE brand = '" + data.brand +"' AND model = '" + data.model + "') "
+              + " AND"
+              + " ((('" + data.name + "' is null) AND ('" + data.version + "' is null)) OR"
+              + " (operating_system in (SELECT id FROM OperatingSystem WHERE name = '" + data.name + "' AND version = '" + data.version + "')))";
+    return new Promise (function (resolve, reject) {
+        db.all(query, function (err, res) {
+            if (err) { callback(err); return; }
+            var videos = res.map(r => ({ video: r.pathtoxml }))
+            return resolve(videos);
+        });
+    })
+}
+
+function parseData (data) {
+    data.name = null;
+    data.version = null;
+    if (data.os !== 'Any') {
+        var split = data.os.split("-");
+        data.name = split[0];
+        data.version = split[1];
+    }
+    return data;
+}
+
 // exports
 module.exports = {
     selectBrands,
     selectModels,
-    selectOS
+    selectOS,
+    selectClassA
 };
