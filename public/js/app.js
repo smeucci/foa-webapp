@@ -1,5 +1,5 @@
 
-function appendOption(id, data) {
+function appendOption (id, data) {
     $.each(data, (i, item) => {
         $(id).append($('<option>', {
             value: item.value,
@@ -8,20 +8,20 @@ function appendOption(id, data) {
     });
 }
 
-function resetSelect(id) {
+function resetSelect (id) {
     $(id).children()
          .remove()
          .end()
          .append($('<option>', { value: 'Any', text: 'Any'}));
 }
 
-function loadBrands() {
+function loadBrands () {
     $.get('/brands', function (data) {
         appendOption('#sel-brands', data);
     });
 }
 
-function loadModels() {
+function loadModels () {
     var brand = $( "#sel-brands option:selected" ).val();
     resetSelect('#sel-models');
     resetSelect('#sel-os');
@@ -30,7 +30,7 @@ function loadModels() {
     });
 }
 
-function loadOS() {
+function loadOS () {
     var brand = $( "#sel-brands option:selected" ).val();
     var model = $( "#sel-models option:selected" ).val();
     resetSelect('#sel-os');
@@ -39,11 +39,15 @@ function loadOS() {
     });
 }
 
-function selectedClass() {
+function selectedClass () {
     var brand = $( "#sel-brands option:selected" ).val();
     var model = $( "#sel-models option:selected" ).val();
     var os = $( "#sel-os option:selected" ).val();
     $('#output').text("Class: " + brand + ", " + model + ", " + os);
+}
+
+function download () {
+    //window.open('/download')
 }
 
 function resetProgressBar () {
@@ -90,7 +94,7 @@ function upload () {
           mimeType:'multipart/form-data',
           processData: false,
           contentType: false,
-          success: function (data) { console.log('Upload success: ' + data.success); },
+          success: function (data) { console.log('Upload success: ' + JSON.parse(data).success); },
           xhr: function () {
               var xhr = new XMLHttpRequest();
               xhr.upload.addEventListener('progress', function(evt) {

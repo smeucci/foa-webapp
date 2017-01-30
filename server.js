@@ -27,6 +27,11 @@ app.get('/models', dropdown.getModels);
 app.get('/os', dropdown.getOS);
 app.post('/query', query.run);
 
+app.get('/download', function(req, res){
+  res.download('/home/saverio/Downloads/videos.zip', 'videos.zip');
+});
+
+
 app.listen(port, function () {
     console.log('Listening on port ' + port + '...');
 });
