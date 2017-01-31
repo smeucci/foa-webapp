@@ -94,7 +94,10 @@ function upload () {
           mimeType:'multipart/form-data',
           processData: false,
           contentType: false,
-          success: function (data) { console.log('Upload success: ' + JSON.parse(data).success); },
+          success: function (data) {
+              console.log('Upload success: ' + JSON.parse(data).success);
+              console.log(JSON.parse(data).result); 
+          },
           xhr: function () {
               var xhr = new XMLHttpRequest();
               xhr.upload.addEventListener('progress', function(evt) {
