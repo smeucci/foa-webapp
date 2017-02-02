@@ -18,13 +18,23 @@ var run = async function (req, res) {
     // upload files
     var results = await upload.upload(req, folder);
     var _class = results.class;
+    if (classIsAllAny(_class)) {
+        console.log('auto');
+        var likelihoods = await query_automatic(folder, results);
+    } else {
+        console.log('manual');
+        var likelihoods = await query_manual(_class, folder, results);
+    }
+    // return
+    res.json({success: results.success, folder: folder, results: likelihoods});
+}
+
+async function query_manual (_class, folder, results) {
     // query for class A and B
-    var videosA = await db.selectClassA(_class)
-    var videosB = await db.selectClassB(_class)
-    var listA = {list: videosA};
-    var listB = {list: videosB};
-    var jsonA = JSON.stringify(listA);
-    var jsonB = JSON.stringify(listB);
+    var videosA = await db.selectClassA(_class);
+    var videosB = await db.selectClassB(_class);
+    var jsonA = JSON.stringify({list: videosA});
+    var jsonB = JSON.stringify({list: videosB});
     // save list of files for class A and B
     fs.writeFileSync(path.join(upload.uploadsDir(), folder, '/listA.json'), jsonA, 'utf8', function () {});
     fs.writeFileSync(path.join(upload.uploadsDir(), folder, '/listB.json'), jsonB, 'utf8', function () {});
@@ -39,9 +49,19 @@ var run = async function (req, res) {
         likelihood.filename = path.basename(likelihood.filename);
         likelihoods.results.push(likelihood);
     }
-    console.log(JSON.stringify(likelihoods));
-    // return
-    res.json({success: results.success, folder: folder, result: likelihoods});
+    return likelihoods;
+}
+
+async function query_automatic () {
+    return {results: [{filename: '', likelihood: '', loglikelihood: ''}]};
+}
+
+function classIsAllAny (_class) {
+    if (_class.brand === 'Any' && _class.model === 'Any' && _class.os === 'Any') {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 // exports
