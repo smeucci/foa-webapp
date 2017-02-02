@@ -9,7 +9,7 @@
         <script src="/js/bootstrap.min.js" type="text/javascript"/></script>
         <script src="/js/app.js" type="text/javascript"/></script>
     </head>
-    <body onload="loadBrands(); selectedClass()">
+    <body onload="loadBrands()">
 
         <div class="container">
             <nav class="navbar navbar-inverse bg-inverse">
@@ -33,19 +33,19 @@
                             <div class="panel-body">
                                 <div class="selector">
                                     <label for="sel-brands">Brand:</label>
-                                    <select class="form-control selector" id="sel-brands" onchange="loadModels(); selectedClass()">
+                                    <select class="form-control selector" id="sel-brands" onchange="loadModels()">
                                         <option value="Any">Any</option>
                                     </select>
                                 </div>
                                 <div class="selector">
                                     <label for="sel-models">Model:</label>
-                                    <select class="form-control selector" id="sel-models" onchange="loadOS(); selectedClass()">
+                                    <select class="form-control selector" id="sel-models" onchange="loadOS()">
                                         <option value="Any">Any</option>
                                     </select>
                                 </div>
                                 <div class="selector">
                                     <label for="sel-os">Operating System:</label>
-                                    <select class="form-control selector" id="sel-os" onchange="selectedClass()">
+                                    <select class="form-control selector" id="sel-os">
                                         <option value="Any">Any</option>
                                     </select>
                                 </div>

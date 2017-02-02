@@ -70,6 +70,14 @@ function displayFiles () {
     }
 }
 
+function displayResults (results) {
+    $(".well").text("");
+    for (var i = 0; i < results.length; i++) {
+        var data = "filename: " + results[i].filename + ", loglikelihood: " + results[i].loglikelihood;
+        $(".well").append("<p>" + data + "</p>");
+    }
+}
+
 function upload () {
   var files = $('#upload-input').get(0).files;
 
@@ -96,7 +104,7 @@ function upload () {
           contentType: false,
           success: function (data) {
               console.log('Upload success: ' + JSON.parse(data).success);
-              console.log(JSON.parse(data).result); 
+              displayResults(JSON.parse(data).results.results);
           },
           xhr: function () {
               var xhr = new XMLHttpRequest();

@@ -47,6 +47,10 @@ div.well {
 	height: 55%;
 }
 
+div.well p {
+    font-size: 14px;
+}
+
 button.query-btn {
 	float: right;
 }
