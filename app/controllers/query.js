@@ -38,6 +38,9 @@ async function query_manual (_class, folder, results) {
     // save list of files for class A and B
     fs.writeFileSync(path.join(upload.uploadsDir(), folder, '/listA.json'), jsonA, 'utf8', function () {});
     fs.writeFileSync(path.join(upload.uploadsDir(), folder, '/listB.json'), jsonB, 'utf8', function () {});
+    console.log(JSON.stringify(_class));
+    console.log('A: ' + videosA.length);
+    console.log('B: ' + videosB.length);
     // train
     var exitCodeTrain = await java.train(folder);
     // parse
@@ -49,6 +52,7 @@ async function query_manual (_class, folder, results) {
         likelihood.filename = path.basename(likelihood.filename);
         likelihoods.results.push(likelihood);
     }
+    console.log(likelihoods);
     return likelihoods;
 }
 

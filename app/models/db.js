@@ -46,12 +46,15 @@ function selectOS (data) {
 }
 
 function selectClassA (data) {
+    console.log('A: ')
     var data = parseData(data);
     var query = " SELECT pathtoxml FROM VideoFile WHERE"
-              + " device_model in (SELECT id FROM DeviceModel WHERE brand = '" + data.brand +"' AND model = '" + data.model + "') "
+              + " device_model in (SELECT id FROM DeviceModel WHERE brand = '" + data.brand +"' AND "
+              + "('" + data.model + "' == 'Any' ) OR model = '" + data.model + "') "
               + " AND"
-              + " ((('" + data.name + "' is null) AND ('" + data.version + "' is null)) OR"
+              + " (('" + data.os + "' == 'Any') OR"
               + " (operating_system in (SELECT id FROM OperatingSystem WHERE name = '" + data.name + "' AND version = '" + data.version + "')))";
+    console.log(query);
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { callback(err); return; }
@@ -62,23 +65,31 @@ function selectClassA (data) {
 }
 
 async function selectClassB (data) {
+    console.log('B: ')
     var data = parseData(data);
     var results = await selectBrandModelOS(data);
     if (isEmpty(results)) {
         results = await selectBrandModel(data);
         if (isEmpty(results)) {
-            results = await selectBrand(data);
+            results = await selectBrandOSNameVersion(data);
+            if (isEmpty(results)) {
+                results = await selectBrandOSName(data);
+                if (isEmpty(results)) {
+                    results = await selectBrand(data);
+                }
+            }
         }
     }
     return results;
 }
 
 function selectBrandModelOS (data) {
+    if (data.os === 'Any') { return []; }
     var query = " SELECT pathtoxml FROM VideoFile WHERE"
               + " device_model in (SELECT id FROM DeviceModel WHERE brand = '" + data.brand +"' AND model = '" + data.model + "') "
               + " AND"
-              + " ((('" + data.name + "' is null) AND ('" + data.version + "' is null)) OR"
               + " (operating_system not in (SELECT id FROM OperatingSystem WHERE name = '" + data.name + "' AND version = '" + data.version + "')))";
+    console.log(query);
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { callback(err); return; }
@@ -89,8 +100,42 @@ function selectBrandModelOS (data) {
 }
 
 function selectBrandModel (data) {
+    if (data.model === 'Any') { return []; }
     var query = " SELECT pathtoxml FROM VideoFile WHERE"
               + " device_model in (SELECT id FROM DeviceModel WHERE brand = '" + data.brand +"' AND model != '" + data.model + "')";
+    console.log(query);
+    return new Promise (function (resolve, reject) {
+        db.all(query, function (err, res) {
+            if (err) { callback(err); return; }
+            var videos = res.map(r => ({ video: r.pathtoxml }))
+            return resolve(videos);
+        });
+    })
+}
+
+function selectBrandOSNameVersion (data) {
+    var query = " SELECT pathtoxml FROM VideoFile WHERE"
+              + " device_model in (SELECT id FROM DeviceModel WHERE brand != '" + data.brand + "') AND"
+              + " operating_system in (SELECT operating_system FROM VideoFile WHERE"
+              + " device_model in (SELECT id FROM DeviceModel WHERE brand = '" + data.brand + "'))";
+    console.log(query);
+    return new Promise (function (resolve, reject) {
+        db.all(query, function (err, res) {
+            if (err) { callback(err); return; }
+            var videos = res.map(r => ({ video: r.pathtoxml }))
+            return resolve(videos);
+        });
+    })
+}
+
+function selectBrandOSName (data) {
+    var query = " SELECT pathtoxml FROM VideoFile WHERE"
+              + " device_model in (SELECT id FROM DeviceModel WHERE brand != '" + data.brand + "') AND"
+              + " operating_system in (SELECT id FROM OperatingSystem WHERE"
+              + " name in (SELECT name FROM OperatingSystem WHERE"
+              + " id in (SELECT operating_system FROM VideoFile WHERE"
+              + " device_model in (SELECT id FROM DeviceModel WHERE brand = '" + data.brand + "'))))";
+    console.log(query);
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { callback(err); return; }
@@ -102,7 +147,8 @@ function selectBrandModel (data) {
 
 function selectBrand (data) {
     var query = " SELECT pathtoxml FROM VideoFile WHERE"
-              + " device_model in (SELECT id FROM DeviceModel WHERE brand != '" + data.brand +")";
+              + " device_model in (SELECT id FROM DeviceModel WHERE brand != '" + data.brand + "')";
+    console.log(query);
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { callback(err); return; }
