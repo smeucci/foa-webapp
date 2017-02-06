@@ -19,7 +19,15 @@ app.use(express.static(path.join(__dirname, '/public')));
 // functions
 app.get('/', function (req, res) {
     console.log(req.ip)
-    res.sendFile(path.join(__dirname, '/app/views/index.html'))
+    res.sendFile(path.join(__dirname, '/app/views/index.html'));
+});
+
+app.get('/test', function (req, res) {
+    res.sendFile(path.join(__dirname, '/app/views/test.html'));
+});
+
+app.get('/compare', function (req, res) {
+    res.sendFile(path.join(__dirname, '/app/views/compare.html'));
 });
 
 app.get('/brands', dropdown.getBrands);
