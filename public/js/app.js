@@ -71,9 +71,11 @@ function displayFiles () {
 }
 
 function displayResults (results) {
+    console.log(results)
     $(".well").text("");
     for (var i = 0; i < results.length; i++) {
-        var data = "filename: " + results[i].filename + ", loglikelihood: " + results[i].loglikelihood;
+        var data = "filename: " + results[i].filename + ", loglikelihood: " + results[i].loglikelihood
+                   + ", class: " + results[i].class.brand + " " + results[i].class.model + " " + results[i].class.os;
         $(".well").append("<p>" + data + "</p>");
     }
 }
