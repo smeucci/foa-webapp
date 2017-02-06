@@ -17,47 +17,59 @@ var run = async function (req, res) {
     var folder = random.generate(32);
     // upload files
     var results = await upload.upload(req, folder);
-    var _class = results.class;
-    if (classIsAllAny(_class)) {
+    // parse
+    var exitCodeParse = await java.parse(folder);
+    // compute likelihoods
+    if (classIsAllAny(results.class)) {
         console.log('auto');
         var likelihoods = await query_automatic(folder, results);
     } else {
         console.log('manual');
-        var likelihoods = await query_manual(_class, folder, results);
+        var likelihoods = await query_manual(folder, results);
     }
     // return
     res.json({success: results.success, folder: folder, results: likelihoods});
 }
 
-async function query_manual (_class, folder, results) {
+async function query_manual (folder, results) {
     // query for class A and B
-    var videosA = await db.selectClassA(_class);
-    var videosB = await db.selectClassB(_class);
+    var videosA = await db.selectClassA(results.class);
+    var videosB = await db.selectClassB(results.class);
     var jsonA = JSON.stringify({list: videosA});
     var jsonB = JSON.stringify({list: videosB});
     // save list of files for class A and B
     fs.writeFileSync(path.join(upload.uploadsDir(), folder, '/listA.json'), jsonA, 'utf8', function () {});
     fs.writeFileSync(path.join(upload.uploadsDir(), folder, '/listB.json'), jsonB, 'utf8', function () {});
-    console.log(JSON.stringify(_class));
-    console.log('A: ' + videosA.length);
-    console.log('B: ' + videosB.length);
     // train
     var exitCodeTrain = await java.train(folder);
-    // parse
-    var exitCodeParse = await java.parse(folder);
     // test
     var likelihoods = {results: []};
     for (var i = 0; i < results.filenames.length; i++) {
         var likelihood = await java.test(folder, results.filenames[i]);
         likelihood.filename = path.basename(likelihood.filename);
+        likelihood.class = results.class;
         likelihoods.results.push(likelihood);
     }
-    console.log(likelihoods);
     return likelihoods;
 }
 
-async function query_automatic () {
-    return {results: [{filename: '', likelihood: '', loglikelihood: ''}]};
+async function query_automatic (folder, results) {
+    var data = []
+    var brands = await db.selectBrands();
+    for (var i = 0; i < brands.length; i++) {
+        var models = await db.selectModels({brand: brands[i].value});
+        for (var j = 0; j < models.length; j++) {
+            var os = await db.selectOS({brand: brands[i].value, model: models[j].value});
+            for (var h = 0; h < os.length; h++) {
+                console.log({brand: brands[i].value, model: models[j].value, os: os[h].value});
+                results.class = {brand: brands[i].value, model: models[j].value, os: os[h].value};
+                var res = await query_manual(folder, results);
+                data.push(res);
+            }
+        }
+    }
+    var likelihoods = utils.maxLikelihood(data, results.filenames.length);
+    return likelihoods;
 }
 
 function classIsAllAny (_class) {
