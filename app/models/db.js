@@ -13,7 +13,7 @@ function selectBrands () {
     var query = "SELECT DISTINCT brand FROM DeviceModel";
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
-            if (err) { callback(err); return; }
+            if (err) { console.log(err); return; }
             var brands = res.map(r => ({value: r.brand, text: r.brand}))
             return resolve(brands);
         });
@@ -24,7 +24,7 @@ function selectModels (data) {
     var query = "SELECT model FROM DeviceModel WHERE brand = '" + data.brand + "'";
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
-            if (err) { callback(err); return; }
+            if (err) { console.log(err); return; }
             var models = res.map(r => ({value: r.model, text: r.model}))
             return resolve(models);
         });
@@ -38,7 +38,7 @@ function selectOS (data) {
                 + "WHERE brand = '" + data.brand + "' AND model = '" + data.model + "'))";
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
-            if (err) { callback(err); return; }
+            if (err) { console.log(err); return; }
             var os = res.map(r => ({ value: r.name + "-" + r.version, text: r.name + " " + r.version }))
             return resolve(os);
         });
@@ -46,7 +46,6 @@ function selectOS (data) {
 }
 
 function selectClassA (data) {
-    console.log('A: ')
     var data = parseData(data);
     var query = " SELECT pathtoxml FROM VideoFile WHERE"
               + " device_model in (SELECT id FROM DeviceModel WHERE brand = '" + data.brand +"' AND "
@@ -54,10 +53,9 @@ function selectClassA (data) {
               + " AND"
               + " (('" + data.os + "' == 'Any') OR"
               + " (operating_system in (SELECT id FROM OperatingSystem WHERE name = '" + data.name + "' AND version = '" + data.version + "')))";
-    console.log(query);
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
-            if (err) { callback(err); return; }
+            if (err) { console.log(err); return; }
             var videos = res.map(r => ({ video: r.pathtoxml }))
             return resolve(videos);
         });
@@ -65,7 +63,6 @@ function selectClassA (data) {
 }
 
 async function selectClassB (data) {
-    console.log('B: ')
     var data = parseData(data);
     var results = await selectBrandModelOS(data);
     if (isEmpty(results)) {
@@ -88,11 +85,10 @@ function selectBrandModelOS (data) {
     var query = " SELECT pathtoxml FROM VideoFile WHERE"
               + " device_model in (SELECT id FROM DeviceModel WHERE brand = '" + data.brand +"' AND model = '" + data.model + "') "
               + " AND"
-              + " (operating_system not in (SELECT id FROM OperatingSystem WHERE name = '" + data.name + "' AND version = '" + data.version + "')))";
-    console.log(query);
+              + " (operating_system not in (SELECT id FROM OperatingSystem WHERE name = '" + data.name + "' AND version = '" + data.version + "'))";
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
-            if (err) { callback(err); return; }
+            if (err) { console.log(err); return; }
             var videos = res.map(r => ({ video: r.pathtoxml }))
             return resolve(videos);
         });
@@ -103,10 +99,9 @@ function selectBrandModel (data) {
     if (data.model === 'Any') { return []; }
     var query = " SELECT pathtoxml FROM VideoFile WHERE"
               + " device_model in (SELECT id FROM DeviceModel WHERE brand = '" + data.brand +"' AND model != '" + data.model + "')";
-    console.log(query);
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
-            if (err) { callback(err); return; }
+            if (err) { console.log(err); return; }
             var videos = res.map(r => ({ video: r.pathtoxml }))
             return resolve(videos);
         });
@@ -118,10 +113,9 @@ function selectBrandOSNameVersion (data) {
               + " device_model in (SELECT id FROM DeviceModel WHERE brand != '" + data.brand + "') AND"
               + " operating_system in (SELECT operating_system FROM VideoFile WHERE"
               + " device_model in (SELECT id FROM DeviceModel WHERE brand = '" + data.brand + "'))";
-    console.log(query);
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
-            if (err) { callback(err); return; }
+            if (err) { console.log(err); return; }
             var videos = res.map(r => ({ video: r.pathtoxml }))
             return resolve(videos);
         });
@@ -135,10 +129,9 @@ function selectBrandOSName (data) {
               + " name in (SELECT name FROM OperatingSystem WHERE"
               + " id in (SELECT operating_system FROM VideoFile WHERE"
               + " device_model in (SELECT id FROM DeviceModel WHERE brand = '" + data.brand + "'))))";
-    console.log(query);
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
-            if (err) { callback(err); return; }
+            if (err) { console.log(err); return; }
             var videos = res.map(r => ({ video: r.pathtoxml }))
             return resolve(videos);
         });
@@ -148,10 +141,9 @@ function selectBrandOSName (data) {
 function selectBrand (data) {
     var query = " SELECT pathtoxml FROM VideoFile WHERE"
               + " device_model in (SELECT id FROM DeviceModel WHERE brand != '" + data.brand + "')";
-    console.log(query);
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
-            if (err) { callback(err); return; }
+            if (err) { console.log(err); return; }
             var videos = res.map(r => ({ video: r.pathtoxml }))
             return resolve(videos);
         });
