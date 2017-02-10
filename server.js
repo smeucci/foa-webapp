@@ -35,7 +35,7 @@ app.get('/brands', dropdown.getBrands);
 app.get('/models', dropdown.getModels);
 app.get('/os', dropdown.getOS);
 app.post('/query', query.run);
-app.get('/download', function(req, res){
+app.get('/download', function (req, res){
   res.download(path.join(__dirname, '/app/jar/vft-parse.jar'), 'vft-parse.jar');
 });
 app.get('/init', sqlite.initDB);

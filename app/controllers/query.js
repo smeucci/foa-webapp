@@ -5,7 +5,7 @@
 // require
 var path = require('path');
 var fs = require('fs-extra');
-var random = require(path.join(__dirname, '/../utils/random'))
+var random = require(path.join(__dirname, '/../utils/random'));
 var upload = require(path.join(__dirname, '/../utils/upload'));
 var java = require(path.join(__dirname, '/../utils/java'));
 var db = require(path.join(__dirname, '/../models/db'));

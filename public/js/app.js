@@ -47,7 +47,7 @@ function selectedClass () {
 }
 
 function download () {
-    //window.open('/download')
+    window.open('/download')
 }
 
 function resetProgressBar () {
