@@ -20,7 +20,7 @@ function train (folder) {
         child.on('exit', function (exitCode) {
             return resolve(exitCode);
         });
-    })
+    });
 }
 
 function parse (folder) {
@@ -31,7 +31,7 @@ function parse (folder) {
         child.on('exit', function (exitCode) {
             return resolve(exitCode);
         });
-    })
+    });
 }
 
 function test (folder, video) {
@@ -46,13 +46,46 @@ function test (folder, video) {
         child.stdout.on('data', function (data) {
             var res = JSON.parse(data.toString().replace(/(\r\n|\n|\r)/gm,""));
             return resolve(res);
-        })
-    })
+        });
+    });
 }
+
+function init () {
+    return new Promise (function (resolve, reject) {
+        var db = path.join(__dirname, "/../database/database.db");
+        var cmd = "/usr/bin/java -jar " + foa + " --init -i " + db;
+        var child = spawn(cmd, {shell: true});
+        child.stdout.on('data', function (data) {
+            console.log(data.toString());
+            return resolve('ok');
+        });
+    });
+}
+
+function update () {
+    return new Promise (function (resolve, reject) {
+        var db = path.join(__dirname, "/../database/database.db");
+        var dataset = path.join(__dirname, "/../dataset/");
+        var cmd = "/usr/bin/java -jar " + foa + " --update -i " + dataset + " -o " + db;
+        var child = spawn(cmd, {shell: true});
+        child.stdout.on('data', function (data) {
+            console.log(data.toString());
+        });
+        child.on('exit', function (exitCode) {
+            return resolve(exitCode);
+        })
+
+
+    });
+}
+
+
 
 // exports
 module.exports = {
     train,
     parse,
-    test
+    test,
+    init,
+    update
 }

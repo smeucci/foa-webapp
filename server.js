@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 var unique = require('array-unique');
 var dropdown = require(path.join(__dirname, '/app/controllers/dropdown'));
 var query = require(path.join(__dirname, '/app/controllers/query'));
+var sqlite = require(path.join(__dirname, '/app/controllers/sqlite'));
 var port = process.env.PORT || 3000;
 
 // settings
@@ -34,11 +35,11 @@ app.get('/brands', dropdown.getBrands);
 app.get('/models', dropdown.getModels);
 app.get('/os', dropdown.getOS);
 app.post('/query', query.run);
-
 app.get('/download', function(req, res){
-  res.download('/home/saverio/Downloads/videos.zip', 'videos.zip');
+  res.download(path.join(__dirname, '/app/jar/vft-parse.jar'), 'vft-parse.jar');
 });
-
+app.get('/init', sqlite.initDB);
+app.get('/update', sqlite.updateDB);
 
 app.listen(port, function () {
     console.log('Listening on port ' + port + '...');
