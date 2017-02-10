@@ -1,6 +1,7 @@
 
 /node_modules/
 /app/uploads/**
+/app/dataset/**
 /test/uploads/**
 *.*~
 *.db
