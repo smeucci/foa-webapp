@@ -68,13 +68,7 @@ async function selectClassB (data) {
     if (isEmpty(results)) {
         results = await selectBrandModel(data);
         if (isEmpty(results)) {
-            results = await selectBrandOSNameVersion(data);
-            if (isEmpty(results)) {
-                results = await selectBrandOSName(data);
-                if (isEmpty(results)) {
-                    results = await selectBrand(data);
-                }
-            }
+            results = await selectBrand(data);
         }
     }
     return results;
