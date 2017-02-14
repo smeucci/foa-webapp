@@ -128,3 +128,15 @@ function upload () {
       });
     }
 }
+
+function runtest () {
+    var brand = $( "#sel-brands option:selected" ).val();
+    var model = $( "#sel-models option:selected" ).val();
+    var os = $( "#sel-os option:selected" ).val();
+    var device = {brand: brand, model: model, os: os};
+
+    $.get('/querytest', device, function (data) {
+        console.log('Upload success: ' + data.success);
+        displayResults(data.results.results);
+    });
+}
