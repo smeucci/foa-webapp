@@ -34,7 +34,8 @@ app.get('/compare', function (req, res) {
 app.get('/brands', dropdown.getBrands);
 app.get('/models', dropdown.getModels);
 app.get('/os', dropdown.getOS);
-app.post('/query', query.run);
+app.post('/query', query.query);
+app.get('/querytest', query.querytest);
 app.get('/download', function (req, res){
   res.download(path.join(__dirname, '/app/jar/vft-parse.jar'), 'vft-parse.jar');
 });
