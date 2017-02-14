@@ -5,20 +5,35 @@
 // require
 var path = require('path');
 var fs = require('fs-extra');
-var random = require(path.join(__dirname, '/../utils/random'));
 var upload = require(path.join(__dirname, '/../utils/upload'));
 var java = require(path.join(__dirname, '/../utils/java'));
 var db = require(path.join(__dirname, '/../models/db'));
 var utils = require(path.join(__dirname, '/../utils/utils'));
 
 // functions
-var run = async function (req, res) {
+var query = async function (req, res) {
     // generate random folder for this session
-    var folder = random.generate(32);
+    var folder = utils.random(32);
     // upload files
     var results = await upload.upload(req, folder);
     // parse
     var exitCodeParse = await java.parse(folder);
+    // compute likelihoods
+    run(res, folder, results);
+}
+
+var querytest = async function (req, res) {
+    // generate random folder for this session
+    var folder = utils.random(32);
+    // parse req and mkdir folder
+    var results = await utils.setupTest(req, folder);
+    // get test filenames from db
+    results.filenames = await db.selectTestFiles(5);
+    // compute likelihoods
+    run(res, folder, results);
+}
+
+async function run (res, folder, results) {
     // compute likelihoods
     if (classIsAllAny(results.class)) {
         console.log('auto');
@@ -82,5 +97,6 @@ function classIsAllAny (_class) {
 
 // exports
 module.exports = {
-    run
+    query,
+    querytest
 }

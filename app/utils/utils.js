@@ -55,8 +55,21 @@ function parseMaxLikehood (num, data, best) {
     return likelihoods;
 }
 
+function setupTest (req, folder) {
+    return new Promise (function (resolve, reject) {
+        // create folder
+        fs.mkdirSync(path.join(upload.uploadsDir(), folder));
+        // parse parameters (class)
+        results = {success: true, class: {brand: req.query.brand, model: req.query.model, os: req.query.os}}
+        // resolve
+        resolve(results);
+    });
+}
+
 // exports
 module.exports = {
     isEmpty,
-    maxLikelihood
+    random,
+    maxLikelihood,
+    setupTest
 }
