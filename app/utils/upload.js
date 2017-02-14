@@ -17,7 +17,7 @@ function upload (req, folder) {
         form.filenames = [];
         form.on('file', function(field, file) {
             fs.rename(file.path, path.join(form.uploadDir, file.name), function () {});
-            form.filenames.push({filename: file.name});
+            form.filenames.push({filename: path.join(form.uploadDir, file.name)});
         });
 
         form.on('field', function(field, value) {
