@@ -40,7 +40,7 @@ function test (folder, video) {
         var configA = path.join(output, '/configA-w.xml');
         var configB = path.join(output, '/configB-w.xml');
         var filepath = video.filename.endsWith(".xml") ? video.filename : video.filename.concat(".xml");
-        filepath = path.join(output, filepath);
+        //filepath = path.join(output, filepath);
         var cmd = "/usr/bin/java -jar " + foa + " --test -cA " + configA + " -cB " + configB + " -i " + filepath;
         var child = spawn(cmd, {shell: true});
         child.stdout.on('data', function (data) {
@@ -62,11 +62,11 @@ function init () {
     });
 }
 
-function update () {
+function updateTraining () {
     return new Promise (function (resolve, reject) {
         var db = path.join(__dirname, "/../database/database.db");
-        var dataset = path.join(__dirname, "/../dataset/");
-        var cmd = "/usr/bin/java -jar " + foa + " --update -i " + dataset + " -o " + db;
+        var dataset = path.join(__dirname, "/../dataset/training");
+        var cmd = "/usr/bin/java -jar " + foa + " --update-training -i " + dataset + " -o " + db;
         var child = spawn(cmd, {shell: true});
         child.stdout.on('data', function (data) {
             console.log(data.toString());
@@ -74,12 +74,23 @@ function update () {
         child.on('exit', function (exitCode) {
             return resolve(exitCode);
         })
-
-
     });
 }
 
-
+function updateTesting () {
+    return new Promise (function (resolve, reject) {
+        var db = path.join(__dirname, "/../database/database.db");
+        var dataset = path.join(__dirname, "/../dataset/testing/");
+        var cmd = "/usr/bin/java -jar " + foa + " --update-testing -i " + dataset + " -o " + db;
+        var child = spawn(cmd, {shell: true});
+        child.stdout.on('data', function (data) {
+            console.log(data.toString());
+        });
+        child.on('exit', function (exitCode) {
+            return resolve(exitCode);
+        })
+    });
+}
 
 // exports
 module.exports = {
@@ -87,5 +98,6 @@ module.exports = {
     parse,
     test,
     init,
-    update
+    updateTraining,
+    updateTesting
 }
