@@ -5,6 +5,7 @@
 // require
 var path = require('path');
 var fs = require('fs-extra');
+var formidable = require('formidable');
 var upload = require(path.join(__dirname, '/../utils/upload'));
 
 // functions
@@ -17,6 +18,13 @@ function isEmpty (obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) return false;
     }
     return true;
+}
+
+function random (length) {
+    const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+    return result;
 }
 
 function maxLikelihood (data, num) {
