@@ -75,12 +75,17 @@ function displayFiles () {
 }
 
 function displayResults (results) {
-    console.log(results)
     $(".well").text("");
     for (var i = 0; i < results.length; i++) {
-        var data = "filename: " + results[i].filename + ", loglikelihood: " + results[i].loglikelihood
-                   + ", class: " + results[i].class.brand + " " + results[i].class.model + " " + results[i].class.os;
-        $(".well").append("<p>" + data + "</p>");
+        delete results[i].filepath;
+        var filename = "# filename: " + results[i].filename + " #";
+        $(".well").append("<p><b>" + filename + "</b></p>");
+        var num = (results[i].results.length == 1) ? 1 : 3;
+        for (var j = 0; j < num; j++) {
+            var data = "- loglikelihood: " + results[i].results[j].loglikelihood + ", class: " + results[i].results[j].class.brand
+                     + " " + results[i].results[j].class.model + " " + results[i].results[j].class.os;
+            $(".well").append("<p>" + data + "</p>");
+        }
     }
 }
 
@@ -109,8 +114,10 @@ function upload () {
           processData: false,
           contentType: false,
           success: function (data) {
-              console.log('Upload success: ' + JSON.parse(data).success);
-              displayResults(JSON.parse(data).results.results);
+              data = JSON.parse(data);
+              console.log(data);
+              console.log('Upload success: ' + data.success);
+              displayResults(data.results);
           },
           xhr: function () {
               var xhr = new XMLHttpRequest();
@@ -140,7 +147,8 @@ function runtest () {
     var device = {brand: brand, model: model, os: os};
 
     $.get('/querytest', device, function (data) {
+        console.log(data)
         console.log('Upload success: ' + data.success);
-        displayResults(data.results.results);
+        displayResults(data.results);
     });
 }
