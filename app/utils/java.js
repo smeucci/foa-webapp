@@ -34,12 +34,12 @@ function parse (folder) {
     });
 }
 
-function test (folder, video) {
+function test (folder, filename) {
     return new Promise (function (resolve, reject) {
         var output = path.join(upload.uploadsDir(), folder);
         var configA = path.join(output, '/configA-w.xml');
         var configB = path.join(output, '/configB-w.xml');
-        var filepath = video.filename.endsWith(".xml") ? video.filename : video.filename.concat(".xml");
+        var filepath = filename.endsWith(".xml") ? filename : filename.concat(".xml");
         //filepath = path.join(output, filepath);
         var cmd = "/usr/bin/java -jar " + foa + " --test -cA " + configA + " -cB " + configB + " -i " + filepath;
         var child = spawn(cmd, {shell: true});
