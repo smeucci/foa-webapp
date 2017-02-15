@@ -58,6 +58,10 @@ function resetProgressBar () {
     document.getElementById("warning").style.display = "none";
 }
 
+function cleanOutput () {
+    $('#output').text('...');
+}
+
 function displayFiles () {
     var files = $('#upload-input').get(0).files;
     // limit max number of files that can be uploaded per time
