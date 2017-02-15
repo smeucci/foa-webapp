@@ -15,61 +15,56 @@ var query = async function (req, res) {
     // generate random folder for this session
     var folder = utils.random(32);
     // upload files
-    var results = await upload.upload(req, folder);
+    var setup = await upload.upload(req, folder);
     // parse
     var exitCodeParse = await java.parse(folder);
     // compute likelihoods
-    run(res, folder, results);
+    var results = await run(folder, setup);
+    // return
+    res.json({success: setup.success, folder: folder, results: results});
 }
 
 var querytest = async function (req, res) {
     // generate random folder for this session
     var folder = utils.random(32);
     // parse req and mkdir folder
-    var results = await utils.setupTest(req, folder);
+    var setup = await utils.setupTest(req, folder);
     // get test filenames from db
-    results.filenames = await db.selectTestFiles(5);
+    setup.filenames = await db.selectTestFiles(5);
     // compute likelihoods
-    run(res, folder, results);
+    var results = await run(folder, setup);
+    // return
+    res.json({success: setup.success, folder: folder, results: results});
 }
 
-async function run (res, folder, results) {
+async function run (folder, setup) {
+    // setup likelihoods data structure
+    var likelihoods = setup_likehoods(setup.filenames);
     // compute likelihoods
-    if (classIsAllAny(results.class)) {
+    if (classIsAllAny(setup.class)) {
         console.log('auto');
-        var likelihoods = await query_automatic(folder, results);
+        var results = await query_automatic(folder, setup, likelihoods);
     } else {
         console.log('manual');
-        var likelihoods = await query_manual(folder, results);
+        var results = await query_manual(folder, setup, likelihoods);
     }
-    // return
-    res.json({success: results.success, folder: folder, results: likelihoods});
+    return results;
 }
 
-async function query_manual (folder, results) {
-    // query for class A and B
-    var videosA = await db.selectClassA(results.class);
-    var videosB = await db.selectClassB(results.class);
-    var jsonA = JSON.stringify({list: videosA});
-    var jsonB = JSON.stringify({list: videosB});
-    // save list of files for class A and B
-    fs.writeFileSync(path.join(upload.uploadsDir(), folder, '/listA.json'), jsonA, 'utf8', function () {});
-    fs.writeFileSync(path.join(upload.uploadsDir(), folder, '/listB.json'), jsonB, 'utf8', function () {});
-    // train
-    var exitCodeTrain = await java.train(folder);
+async function query_manual (folder, setup, likelihoods) {
+    // setup and train
+    await setup_query(folder, setup);
     // test
-    var likelihoods = {results: []};
-    for (var i = 0; i < results.filenames.length; i++) {
-        var likelihood = await java.test(folder, results.filenames[i]);
-        likelihood.filename = path.basename(likelihood.filename);
-        likelihood.class = results.class;
-        likelihoods.results.push(likelihood);
+    for (var i = 0; i < likelihoods.length; i++) {
+        var results = await java.test(folder, likelihoods[i].filepath);
+        delete results.filename;
+        results.class = setup.class;
+        likelihoods[i].results.push(results);
     }
     return likelihoods;
 }
 
-async function query_automatic (folder, results) {
-    var data = []
+async function query_automatic (folder, setup, likelihoods) {
     var brands = await db.selectBrands();
     for (var i = 0; i < brands.length; i++) {
         var models = await db.selectModels({brand: brands[i].value});
@@ -77,13 +72,12 @@ async function query_automatic (folder, results) {
             var os = await db.selectOS({brand: brands[i].value, model: models[j].value});
             for (var h = 0; h < os.length; h++) {
                 console.log({brand: brands[i].value, model: models[j].value, os: os[h].value});
-                results.class = {brand: brands[i].value, model: models[j].value, os: os[h].value};
-                var res = await query_manual(folder, results);
-                data.push(res);
+                setup.class = {brand: brands[i].value, model: models[j].value, os: os[h].value};
+                var likelihoods = await query_manual(folder, setup, likelihoods);
             }
         }
     }
-    var likelihoods = utils.maxLikelihood(data, results.filenames.length);
+    var likelihoods = utils.sortLikelihoods(likelihoods);
     return likelihoods;
 }
 
@@ -95,6 +89,26 @@ function classIsAllAny (_class) {
     }
 }
 
+async function setup_query (folder, setup) {
+    // query for class A and B
+    var videosA = await db.selectClassA(setup.class);
+    var videosB = await db.selectClassB(setup.class);
+    var jsonA = JSON.stringify({list: videosA});
+    var jsonB = JSON.stringify({list: videosB});
+    // save list of files for class A and B
+    fs.writeFileSync(path.join(upload.uploadsDir(), folder, '/listA.json'), jsonA, 'utf8', function () {});
+    fs.writeFileSync(path.join(upload.uploadsDir(), folder, '/listB.json'), jsonB, 'utf8', function () {});
+    // train
+    var exitCodeTrain = await java.train(folder);
+}
+
+function setup_likehoods (filenames) {
+    var likelihoods = [];
+    for (var i = 0; i < filenames.length; i++) {
+        likelihoods.push({filename: path.basename(filenames[i].filename), filepath: filenames[i].filename, results: []});
+    }
+    return likelihoods;
+}
 // exports
 module.exports = {
     query,
