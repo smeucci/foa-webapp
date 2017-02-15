@@ -27,30 +27,13 @@ function random (length) {
     return result;
 }
 
-function maxLikelihood (data, num) {
-    var max = Array(num).fill(0);
-    var best = Array(num).fill(0);
-    for (var i = 0; i < data.length; i++) {
-        for (var j = 0; j < data[i].results.length; j++) {
-            if (data[i].results[j].likelihood > max[j]) {
-                max[j] = data[i].results[j].likelihood;
-                best[j] = i;
-            }
-        }
-    }
-    return parseMaxLikehood(num, data, best);
-}
-
-function parseMaxLikehood (num, data, best) {
-    var likelihoods = {results: []};
-    for (var i = 0; i < num; i++) {
-        var likelihood = {};
-        var res = data[best[i]].results[i];
-        likelihood.filename = res.filename;
-        likelihood.likelihood = res.likelihood;
-        likelihood.loglikelihood = res.loglikelihood;
-        likelihood.class = res.class;
-        likelihoods.results.push(likelihood);
+function sortLikelihoods (likelihoods) {
+    for (var i = 0; i < likelihoods.length; i++) {
+        likelihoods[i].results.sort(function (a, b) {
+            if (a.loglikelihood < b.loglikelihood) { return 1; }
+            else if (a.loglikelihood == b.loglikelihood) { return 0; }
+            else { return -1; }
+        });
     }
     return likelihoods;
 }
@@ -70,6 +53,6 @@ function setupTest (req, folder) {
 module.exports = {
     isEmpty,
     random,
-    maxLikelihood,
-    setupTest
+    setupTest,
+    sortLikelihoods
 }
