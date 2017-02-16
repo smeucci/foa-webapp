@@ -7,9 +7,11 @@ var path = require('path');
 var spawn = require('child_process').spawn;
 var foa = path.join(__dirname, '/../jar/foa.jar');
 var vft = path.join(__dirname, '/../jar/vft.jar');
-var upload = require(path.join(__dirname, '/../utils/upload'));
+var upload = require(path.join(__dirname, '/upload'));
+var utils = require(path.join(__dirname, '/utils'));
+var config = utils.parseConfig(path.join(__dirname, '/../config/config.conf'));
 
-// funcitons
+// functions
 function train (folder) {
     return new Promise (function (resolve, reject) {
         var output = path.join(upload.uploadsDir(), folder);
@@ -40,7 +42,6 @@ function test (folder, filename) {
         var configA = path.join(output, '/configA-w.xml');
         var configB = path.join(output, '/configB-w.xml');
         var filepath = filename.endsWith(".xml") ? filename : filename.concat(".xml");
-        //filepath = path.join(output, filepath);
         var cmd = "/usr/bin/java -jar " + foa + " --test -cA " + configA + " -cB " + configB + " -i " + filepath;
         var child = spawn(cmd, {shell: true});
         child.stdout.on('data', function (data) {
@@ -65,7 +66,7 @@ function init () {
 function updateTraining () {
     return new Promise (function (resolve, reject) {
         var db = path.join(__dirname, "/../database/database.db");
-        var dataset = path.join(__dirname, "/../dataset/training");
+        var dataset = config.TRAININGDATASET;
         var cmd = "/usr/bin/java -jar " + foa + " --update-training -i " + dataset + " -o " + db;
         var child = spawn(cmd, {shell: true});
         child.stdout.on('data', function (data) {
@@ -80,7 +81,7 @@ function updateTraining () {
 function updateTesting () {
     return new Promise (function (resolve, reject) {
         var db = path.join(__dirname, "/../database/database.db");
-        var dataset = path.join(__dirname, "/../dataset/testing/");
+        var dataset = config.TESTINGDATASET;
         var cmd = "/usr/bin/java -jar " + foa + " --update-testing -i " + dataset + " -o " + db;
         var child = spawn(cmd, {shell: true});
         child.stdout.on('data', function (data) {
