@@ -33,8 +33,10 @@ var querytest = async function (req, res) {
     setup.filenames = await db.selectTestFiles(5);
     // compute likelihoods
     var results = await run(folder, setup);
+    // compute stats
+    var stats = utils.computeStats(results);
     // return
-    res.json({success: setup.success, folder: folder, results: results});
+    res.json({success: setup.success, folder: folder, results: results, stats: stats});
 }
 
 async function run (folder, setup) {
@@ -105,10 +107,16 @@ async function setup_query (folder, setup) {
 function setup_likehoods (filenames) {
     var likelihoods = [];
     for (var i = 0; i < filenames.length; i++) {
-        likelihoods.push({filename: path.basename(filenames[i].filename), filepath: filenames[i].filename, results: []});
+        if (filenames[i].class === undefined) {
+            likelihoods.push({filename: path.basename(filenames[i].filename), filepath: filenames[i].filename, results: []});
+        } else {
+            likelihoods.push({filename: path.basename(filenames[i].filename), filepath: filenames[i].filename,
+                              class: filenames[i].class, results: []});
+        }
     }
     return likelihoods;
 }
+
 // exports
 module.exports = {
     query,

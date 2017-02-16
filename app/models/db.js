@@ -156,11 +156,13 @@ function parseData (data) {
 }
 
 function selectTestFiles (num) {
-    var query = "SELECT pathtoxml FROM VideoFileTest LIMIT " + num + "";
+    var query = "SELECT pathtoxml, brand, model, os, version FROM VideoFileTest LIMIT " + num + "";
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { console.log(err); return; }
-            var videos = res.map(r => ({ filename: r.pathtoxml }))
+            var videos = res.map(r => ({ filename: r.pathtoxml,
+                                         class: { brand: r.brand, model: r.model, os: r.os, version: r.version }
+                                      }))
             return resolve(videos);
         });
     })
