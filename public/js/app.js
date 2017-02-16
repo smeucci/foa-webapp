@@ -75,11 +75,17 @@ function displayFiles () {
 }
 
 function displayResults (results) {
-    $(".well").text("");
     for (var i = 0; i < results.length; i++) {
         delete results[i].filepath;
-        var filename = "# filename: " + results[i].filename + " #";
-        $(".well").append("<p><b>" + filename + "</b></p>");
+        var _class;
+        if (results[i].class === undefined) {
+            label = "";
+        } else {
+            label = ", label: " + results[i].class.brand + " " + results[i].class.model + " "
+                       + results[i].class.os + " " + results[i].class.version;
+        }
+        var video = "# filename: " + results[i].filename + label + " #";
+        $(".well").append("<p><b>" + video + "</b></p>");
         var num = (results[i].results.length == 1) ? 1 : 3;
         for (var j = 0; j < num; j++) {
             var data = "- loglikelihood: " + results[i].results[j].loglikelihood + ", class: " + results[i].results[j].class.brand
@@ -87,6 +93,13 @@ function displayResults (results) {
             $(".well").append("<p>" + data + "</p>");
         }
     }
+}
+
+function displayStats (stats) {
+    var correct = ((stats.TP + stats.TN) / (stats.TP + stats.TN + stats.FP + stats.FN)) * 100;
+    var data = "## stats ## TP: " + stats.TP + ", TN: " + stats.TN
+             + ", FP: " + stats.FP + ", FN: " + stats.FN + ", Correct: " + correct + "%";
+    $(".well").append("<p><b>" + data + "</b></p>");
 }
 
 function upload () {
@@ -114,6 +127,7 @@ function upload () {
           processData: false,
           contentType: false,
           success: function (data) {
+              $(".well").text("");
               data = JSON.parse(data);
               console.log(data);
               console.log('Upload success: ' + data.success);
@@ -147,8 +161,10 @@ function runtest () {
     var device = {brand: brand, model: model, os: os};
 
     $.get('/querytest', device, function (data) {
+        $(".well").text("");
         console.log(data)
         console.log('Upload success: ' + data.success);
+        displayStats(data.stats);
         displayResults(data.results);
     });
 }
