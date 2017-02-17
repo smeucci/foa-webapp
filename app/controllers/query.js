@@ -45,15 +45,15 @@ async function run (folder, setup) {
     // compute likelihoods
     if (classIsAllAny(setup.class)) {
         console.log('auto');
-        var results = await query_automatic(folder, setup, likelihoods);
+        var results = await classify_automatic(folder, setup, likelihoods);
     } else {
         console.log('manual');
-        var results = await query_manual(folder, setup, likelihoods);
+        var results = await classify(folder, setup, likelihoods);
     }
     return results;
 }
 
-async function query_manual (folder, setup, likelihoods) {
+async function classify (folder, setup, likelihoods) {
     // setup and train
     await setup_query(folder, setup);
     // test
@@ -66,7 +66,7 @@ async function query_manual (folder, setup, likelihoods) {
     return likelihoods;
 }
 
-async function query_automatic (folder, setup, likelihoods) {
+async function classify_automatic (folder, setup, likelihoods) {
     var brands = await db.selectBrands();
     for (var i = 0; i < brands.length; i++) {
         var models = await db.selectModels({brand: brands[i].value});
@@ -75,7 +75,7 @@ async function query_automatic (folder, setup, likelihoods) {
             for (var h = 0; h < os.length; h++) {
                 console.log({brand: brands[i].value, model: models[j].value, os: os[h].value});
                 setup.class = {brand: brands[i].value, model: models[j].value, os: os[h].value};
-                var likelihoods = await query_manual(folder, setup, likelihoods);
+                var likelihoods = await classify(folder, setup, likelihoods);
             }
         }
     }

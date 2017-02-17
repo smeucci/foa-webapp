@@ -102,7 +102,7 @@ function displayStats (stats) {
     $(".well").append("<p><b>" + data + "</b></p>");
 }
 
-function upload () {
+function query () {
   var files = $('#upload-input').get(0).files;
 
   // limit max number of files that can be uploaded per time
@@ -154,7 +154,7 @@ function upload () {
     }
 }
 
-function runtest () {
+function querytest () {
     var brand = $( "#sel-brands option:selected" ).val();
     var model = $( "#sel-models option:selected" ).val();
     var os = $( "#sel-os option:selected" ).val();
