@@ -9,6 +9,7 @@ var upload = require(path.join(__dirname, '/../utils/upload'));
 var java = require(path.join(__dirname, '/../utils/java'));
 var db = require(path.join(__dirname, '/../models/db'));
 var utils = require(path.join(__dirname, '/../utils/utils'));
+var config = utils.parseConfig(path.join(__dirname, '/../config/config.conf'));
 
 // functions
 var query = async function (req, res) {
@@ -42,23 +43,23 @@ var querytest = async function (req, res) {
 async function run (folder, setup) {
     // setup likelihoods data structure
     var likelihoods = setup_likehoods(setup.filenames);
+    setup.classesfolder = config.CLASSESFOLDER.replace(/\s+/g,'');
     // compute likelihoods
     if (classIsAllAny(setup.class)) {
         console.log('auto');
         var results = await classify_automatic(folder, setup, likelihoods);
     } else {
         console.log('manual');
+        setup.configfolder = path.join(setup.classesfolder, setup.class.brand + setup.class.model + setup.class.os);
         var results = await classify(folder, setup, likelihoods);
     }
     return results;
 }
 
 async function classify (folder, setup, likelihoods) {
-    // setup and train
-    await setup_query(folder, setup);
     // test
     for (var i = 0; i < likelihoods.length; i++) {
-        var results = await java.test(folder, likelihoods[i].filepath);
+        var results = await java.test(folder, setup.configfolder, likelihoods[i].filepath);
         delete results.filename;
         results.class = setup.class;
         likelihoods[i].results.push(results);
@@ -70,17 +71,31 @@ async function classify_automatic (folder, setup, likelihoods) {
     var brands = await db.selectBrands();
     for (var i = 0; i < brands.length; i++) {
         var models = await db.selectModels({brand: brands[i].value});
+        models.push({value: 'Any', text: 'Any'});
         for (var j = 0; j < models.length; j++) {
-            var os = await db.selectOS({brand: brands[i].value, model: models[j].value});
+            var os = await getOS(brands[i], models[j]);
             for (var h = 0; h < os.length; h++) {
                 console.log({brand: brands[i].value, model: models[j].value, os: os[h].value});
                 setup.class = {brand: brands[i].value, model: models[j].value, os: os[h].value};
+                setup.configfolder = path.join(setup.classesfolder, brands[i].value + models[j].value + os[h].value);
                 var likelihoods = await classify(folder, setup, likelihoods);
             }
         }
     }
     var likelihoods = utils.sortLikelihoods(likelihoods);
     return likelihoods;
+}
+
+async function getOS (brand, model) {
+    if (model.value === 'Any') {
+        var os = [{value: 'Any', text: 'Any'}];
+    } else {
+        var os = await db.selectOS({brand: brand.value, model: model.value});
+        if (typeof os != "undefined" && os != null && os.length > 0) {
+            os.push({value: 'Any', text: 'Any'});
+        }
+    }
+    return os;
 }
 
 function classIsAllAny (_class) {

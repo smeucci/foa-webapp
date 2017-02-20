@@ -11,6 +11,7 @@ var unique = require('array-unique');
 var dropdown = require(path.join(__dirname, '/app/controllers/dropdown'));
 var query = require(path.join(__dirname, '/app/controllers/query'));
 var sqlite = require(path.join(__dirname, '/app/controllers/sqlite'));
+var train = require(path.join(__dirname, '/app/controllers/train'));
 var port = process.env.PORT || 3000;
 
 // settings
@@ -41,6 +42,7 @@ app.get('/download', function (req, res){
 });
 app.get('/init', sqlite.initDB);
 app.get('/update', sqlite.updateDB);
+app.get('/train', train.train);
 
 app.listen(port, function () {
     console.log('Listening on port ' + port + '...');

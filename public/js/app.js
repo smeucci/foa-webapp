@@ -86,7 +86,7 @@ function displayResults (results) {
         }
         var video = "# filename: " + results[i].filename + label + " #";
         $(".well").append("<p><b>" + video + "</b></p>");
-        var num = (results[i].results.length == 1) ? 1 : 3;
+        var num = (results[i].results.length == 1) ? 1 : 5;
         for (var j = 0; j < num; j++) {
             var data = "- loglikelihood: " + results[i].results[j].loglikelihood + ", class: " + results[i].results[j].class.brand
                      + " " + results[i].results[j].class.model + " " + results[i].results[j].class.os;

@@ -14,13 +14,15 @@ var config = utils.parseConfig(path.join(__dirname, '/../config/config.conf'));
 // functions
 function train (folder) {
     return new Promise (function (resolve, reject) {
-        var output = path.join(upload.uploadsDir(), folder);
-        var listA = path.join(output, '/listA.json');
-        var listB = path.join(output, '/listB.json');
-        var cmd = "/usr/bin/java -jar " + foa + " --train -lA " + listA + " -lB " + listB + " -o " + output
+        var listA = path.join(folder, '/listA.json');
+        var listB = path.join(folder, '/listB.json');
+        var cmd = "/usr/bin/java -jar " + foa + " --train -lA " + listA + " -lB " + listB + " -o " + folder
         var child = spawn(cmd, {shell: true});
         child.on('exit', function (exitCode) {
             return resolve(exitCode);
+        });
+        child.on('error', function (data) {
+            console.log(data);
         });
     });
 }
@@ -36,11 +38,10 @@ function parse (folder) {
     });
 }
 
-function test (folder, filename) {
+function test (folder, configfolder, filename) {
     return new Promise (function (resolve, reject) {
-        var output = path.join(upload.uploadsDir(), folder);
-        var configA = path.join(output, '/configA-w.xml');
-        var configB = path.join(output, '/configB-w.xml');
+        var configA = path.join(configfolder, '/configA-w.xml');
+        var configB = path.join(configfolder, '/configB-w.xml');
         var filepath = filename.endsWith(".xml") ? filename : filename.concat(".xml");
         var cmd = "/usr/bin/java -jar " + foa + " --test -cA " + configA + " -cB " + configB + " -i " + filepath;
         var child = spawn(cmd, {shell: true});

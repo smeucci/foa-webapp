@@ -11,14 +11,14 @@ var java = require(path.join(__dirname, '/../utils/java'));
 async function initDB (req, res) {
     var success = await java.init();
     console.log('db init done.');
-    res.json();
+    res.json('db init done.');
 }
 
 async function updateDB (req, res) {
     var exitCode = await java.updateTraining();
     var exitCode = await java.updateTesting();
     console.log('db update done.');
-    res.json();
+    res.json('db update done.');
 }
 
 // exports

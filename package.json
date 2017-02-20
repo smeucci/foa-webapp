@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "start": "node --harmony --trace-warnings server.js",
-    "dev": "nodemon --ignore 'app/uploads/*' --trace-warnings --harmony server.js",
+    "dev": "nodemon --ignore app/dataset/ --ignore 'app/uploads/*' --trace-warnings --harmony server.js",
     "test": "./node_modules/.bin/mocha --harmony --reporter spec"
   },
   "dependencies": {
