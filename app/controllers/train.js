@@ -33,7 +33,8 @@ async function train (req, res) {
             }
         }
     }
-    res.json();
+    console.log('training done.');
+    res.json('training done.');
 }
 
 async function getOS (brand, model) {
