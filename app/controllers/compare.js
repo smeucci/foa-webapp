@@ -17,7 +17,18 @@ async function compare (req, res) {
     var folder = utils.random(32);
     // upload files
     var setup = await upload.upload(req, folder);
-    res.json();
+    // parse
+    var exitCodeParse = await java.parse(folder);
+    // compare
+    var result1 = await java.compare(setup.class.ref, setup.class.query, folder);
+    var result2 = await java.compare(setup.class.query, setup.class.ref, folder);
+    // return
+    result1.reference = path.basename(result1.reference);
+    result1.query = path.basename(result1.query);
+    result2.reference = path.basename(result2.reference);
+    result2.query = path.basename(result2.query);
+    var result = {rq: result1, qr: result2};
+    res.json(result);
 }
 
 // exports
