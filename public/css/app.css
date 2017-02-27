@@ -31,6 +31,14 @@ input#upload-input {
 	display: none;
 }
 
+input#upload-input-ref {
+	display: none;
+}
+
+input#upload-input-query {
+	display: none;
+}
+
 div.panel {
 	height: 100%;
 }

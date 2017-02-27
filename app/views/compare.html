@@ -33,10 +33,10 @@
                                <h3 class="panel-title">Upload</h3>
                             </div>
                             <div class="panel-body">
-                                <label for="upload-btn">Select Video/XML:</label>
+                                <label for="upload-btn">Select Reference Video/XML:</label>
                                 <div>
-                                    <button class="btn btn-sm btn-primary upload-btn" type="button" onclick="resetProgressBar()">Upload</button>
-                                    <span id="files">No file chosen</span>
+                                    <button class="btn btn-sm btn-primary upload-btn" type="button" onclick="resetProgressBarRef()">Upload</button>
+                                    <span id="files-ref">No file chosen</span>
                                 </div>
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar"></div>
@@ -46,7 +46,7 @@
                                     <button class="btn btn-sm btn-primary jar-btn" type="button" onclick="download()">Download</button>
                                 </div>
                                 <div id="warning" class="alert alert-danger" role="alert">Too many file selected. Max is 3.</div>
-                                <input id="upload-input" type="file" name="uploads[]" multiple="multiple" onchange="displayFiles()"></br>
+                                <input id="upload-input-ref" type="file" name="uploads" onchange="displayFilesRef()"></br>
                             </div>
                         </div>
                     </div>
@@ -57,10 +57,10 @@
                                <h3 class="panel-title">Upload</h3>
                             </div>
                             <div class="panel-body">
-                                <label for="upload-btn">Select Video/XML:</label>
+                                <label for="upload-btn">Select Query Video/XML:</label>
                                 <div>
-                                    <button class="btn btn-sm btn-primary upload-btn" type="button" onclick="resetProgressBar()">Upload</button>
-                                    <span id="files">No file chosen</span>
+                                    <button class="btn btn-sm btn-primary upload-btn" type="button" onclick="resetProgressBarQuery()">Upload</button>
+                                    <span id="files-query">No file chosen</span>
                                 </div>
                                 <div class="progress">
                                     <div class="progress-bar" role="progressbar"></div>
@@ -70,7 +70,7 @@
                                     <button class="btn btn-sm btn-primary jar-btn" type="button" onclick="download()">Download</button>
                                 </div>
                                 <div id="warning" class="alert alert-danger" role="alert">Too many file selected. Max is 3.</div>
-                                <input id="upload-input" type="file" name="uploads[]" multiple="multiple" onchange="displayFiles()"></br>
+                                <input id="upload-input-query" type="file" name="uploads" onchange="displayFilesQuery()"></br>
                             </div>
                         </div>
                     </div>
@@ -82,7 +82,7 @@
                             </div>
                             <div class="panel-body">
                                 <div id="output" class="well well-lg pre-scrollable">...</div>
-                                <button class="btn btn-lg btn-danger query-btn" type="button">Run compare</button>
+                                <button class="btn btn-lg btn-danger query-btn" type="button" onclick="comparet(); cleanOutput()">Run compare</button>
                             </div>
                         </div>
                     </div>

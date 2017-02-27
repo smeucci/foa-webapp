@@ -12,6 +12,7 @@ var dropdown = require(path.join(__dirname, '/app/controllers/dropdown'));
 var query = require(path.join(__dirname, '/app/controllers/query'));
 var sqlite = require(path.join(__dirname, '/app/controllers/sqlite'));
 var train = require(path.join(__dirname, '/app/controllers/train'));
+var compare = require(path.join(__dirname, '/app/controllers/compare'));
 var port = process.env.PORT || 3000;
 
 // settings
@@ -37,6 +38,7 @@ app.get('/models', dropdown.getModels);
 app.get('/os', dropdown.getOS);
 app.post('/query', query.query);
 app.get('/querytest', query.querytest);
+app.post('/comparet', compare.compare);
 app.get('/download', function (req, res){
   res.download(path.join(__dirname, '/app/jar/vft-parse.jar'), 'vft-parse.jar');
 });

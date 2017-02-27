@@ -58,6 +58,22 @@ function resetProgressBar () {
     document.getElementById("warning").style.display = "none";
 }
 
+function resetProgressBarRef () {
+    $('#upload-input-ref').click();
+    $('.progress-bar').text('0%');
+    $('.progress-bar').width('0%');
+    $('#files-ref').text('No file chosen');
+    document.getElementById("warning").style.display = "none";
+}
+
+function resetProgressBarQuery () {
+    $('#upload-input-query').click();
+    $('.progress-bar').text('0%');
+    $('.progress-bar').width('0%');
+    $('#files-query').text('No file chosen');
+    document.getElementById("warning").style.display = "none";
+}
+
 function cleanOutput () {
     $('#output').text('...');
 }
@@ -72,6 +88,16 @@ function displayFiles () {
     } else if (files.length > 1 && files.length <= 3){
         $('#files').text(files.length + ' files');
     }
+}
+
+function displayFilesRef () {
+    var files = $('#upload-input-ref').get(0).files;
+    $('#files-ref').text(files[0].name);
+}
+
+function displayFilesQuery () {
+    var files = $('#upload-input-query').get(0).files;
+    $('#files-query').text(files[0].name);
 }
 
 function displayResults (results) {
@@ -167,4 +193,43 @@ function querytest () {
         displayStats(data.stats);
         displayResults(data.results);
     });
+}
+
+function comparet () {
+    var ref = $('#upload-input-ref').get(0).files;
+    var query = $('#upload-input-query').get(0).files;
+
+    var formData = new FormData();
+    formData.append('info',  '{ "brand": "' + ref[0].name + '", ' + '"model": "' + ref[0].name + '", "os": "' + ref[0].name + '" }');
+    formData.append('uploads[]', ref, ref[0].name);
+    formData.append('uploads[]', query, query[0].name);
+
+    $.post({
+        url: '/comparet',
+        data: formData,
+        mimeType:'multipart/form-data',
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            console.log('success');
+        },
+        xhr: function () {
+            var xhr = new XMLHttpRequest();
+            xhr.upload.addEventListener('progress', function(evt) {
+                if (evt.lengthComputable) {
+                    var percentComplete = evt.loaded / evt.total;
+                    percentComplete = parseInt(percentComplete * 100);
+
+                    $('.progress-bar').text(percentComplete + '%');
+                    $('.progress-bar').width(percentComplete + '%');
+
+                    if (percentComplete === 100) {
+                        $('.progress-bar').html('Done');
+                    }
+                }
+            }, false);
+            return xhr;
+        }
+    });
+
 }
