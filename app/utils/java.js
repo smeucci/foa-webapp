@@ -38,6 +38,21 @@ function parse (folder) {
     });
 }
 
+function compare (ref, query, folder) {
+    return new Promise (function (resolve, reject) {
+        var folderpath = path.join(upload.uploadsDir(), folder);
+        console.log(ref)
+        var refpath = (ref.endsWith(".xml")) ? path.join(folderpath, ref) : path.join(folderpath, ref + ".xml");
+        var querypath = (query.endsWith(".xml")) ? path.join(folderpath, query) : path.join(folderpath, query + ".xml");
+        var cmd = "/usr/bin/java -jar " + vft + " -c -i " + refpath + " -i2 " + querypath;
+        var child = spawn(cmd, {shell: true});
+        child.stdout.on('data', function (data) {
+            var res = JSON.parse(data.toString().replace(/(\r\n|\n|\r)/gm,""));
+            return resolve(res);
+        });
+    });
+}
+
 function test (folder, configfolder, filename) {
     return new Promise (function (resolve, reject) {
         var configA = path.join(configfolder, '/configA-w.xml');
@@ -98,6 +113,7 @@ function updateTesting () {
 module.exports = {
     train,
     parse,
+    compare,
     test,
     init,
     updateTraining,
