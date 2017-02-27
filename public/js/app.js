@@ -128,6 +128,13 @@ function displayStats (stats) {
     $(".well").append("<p><b>" + data + "</b></p>");
 }
 
+function displayCompare (data) {
+    $(".well").append("<p><b>" + "# reference: " + data.rq.reference + ", query: " + data.rq.query + "</b></p>");
+    $(".well").append("<p>" + "- diff: " + data.rq.diff + ", tot: " + data.rq.tot + "</p>");
+    $(".well").append("<p><b>" + "# reference: " + data.qr.reference + ", query: " + data.qr.query + "</b></p>");
+    $(".well").append("<p>" + "- diff: " + data.qr.diff + ", tot: " + data.qr.tot + "</p>");
+}
+
 function query () {
   var files = $('#upload-input').get(0).files;
 
@@ -196,13 +203,13 @@ function querytest () {
 }
 
 function comparet () {
-    var ref = $('#upload-input-ref').get(0).files;
-    var query = $('#upload-input-query').get(0).files;
+    var ref = $('#upload-input-ref').get(0).files[0];
+    var query = $('#upload-input-query').get(0).files[0];
 
     var formData = new FormData();
-    formData.append('info',  '{ "brand": "' + ref[0].name + '", ' + '"model": "' + ref[0].name + '", "os": "' + ref[0].name + '" }');
-    formData.append('uploads[]', ref, ref[0].name);
-    formData.append('uploads[]', query, query[0].name);
+    formData.append('info',  '{ "ref": "' + ref.name + '", "query": "' + query.name + '" }');
+    formData.append('uploads[]', ref, ref.name);
+    formData.append('uploads[]', query, query.name);
 
     $.post({
         url: '/comparet',
@@ -211,7 +218,9 @@ function comparet () {
         processData: false,
         contentType: false,
         success: function (data) {
-            console.log('success');
+            $(".well").text("");
+            data = JSON.parse(data);
+            displayCompare(data);
         },
         xhr: function () {
             var xhr = new XMLHttpRequest();
@@ -231,5 +240,4 @@ function comparet () {
             return xhr;
         }
     });
-
 }
