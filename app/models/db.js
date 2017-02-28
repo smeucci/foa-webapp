@@ -32,7 +32,10 @@ function selectModels (data) {
 }
 
 function selectOS (data) {
-    var query = "SELECT * FROM OperatingSystem WHERE id IN "
+    var query = "SELECT * FROM OperatingSystem WHERE "
+                + "name != 'null' AND "
+                + "version != 'null' AND "
+                + "id IN "
                 + "(SELECT operating_system FROM VideoFile WHERE device_model = "
                 + "(SELECT id FROM DeviceModel "
                 + "WHERE brand = '" + data.brand + "' AND model = '" + data.model + "'))";

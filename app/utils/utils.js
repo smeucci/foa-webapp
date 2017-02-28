@@ -64,7 +64,7 @@ function compareClass (target, prediction) {
     var equal = false;
     if (prediction.model == 'Any') {
         equal = isEqual(target.brand, prediction.brand);
-    } else if (prediction.os == 'Any') {
+    } else if (prediction.os == 'Any' || target.os == 'null null') {
         equal = isEqual(target.brand + target.model, prediction.brand + prediction.model)
     } else {
         equal = isEqual(target.brand + target.model + target.os + target.version,
