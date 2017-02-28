@@ -42,9 +42,7 @@ async function getOS (brand, model) {
         var os = [{value: 'Any', text: 'Any'}];
     } else {
         var os = await db.selectOS({brand: brand.value, model: model.value});
-        if (typeof os != "undefined" && os != null && os.length > 0) {
-            os.push({value: 'Any', text: 'Any'});
-        }
+        os.push({value: 'Any', text: 'Any'});
     }
     return os;
 }
