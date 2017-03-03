@@ -38,25 +38,6 @@
                                     <button class="btn btn-sm btn-primary upload-btn" type="button" onclick="resetProgressBarRef()">Upload</button>
                                     <span id="files-ref">No file chosen</span>
                                 </div>
-                                <div class="progress">
-                                    <div class="progress-bar" role="progressbar"></div>
-                                </div>
-                                <label for="jar-btn">Download vft-parse.jar:</label>
-                                <div class="jar">
-                                    <button class="btn btn-sm btn-primary jar-btn" type="button" onclick="download()">Download</button>
-                                </div>
-                                <div id="warning" class="alert alert-danger" role="alert">Too many file selected. Max is 3.</div>
-                                <input id="upload-input-ref" type="file" name="uploads" onchange="displayFilesRef()"></br>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- UPLOAD PANEL -->
-                    <div class="col-xs-3 col-md-3">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                               <h3 class="panel-title">Upload</h3>
-                            </div>
-                            <div class="panel-body">
                                 <label for="upload-btn">Select Query Video/XML:</label>
                                 <div>
                                     <button class="btn btn-sm btn-primary upload-btn" type="button" onclick="resetProgressBarQuery()">Upload</button>
@@ -69,13 +50,13 @@
                                 <div class="jar">
                                     <button class="btn btn-sm btn-primary jar-btn" type="button" onclick="download()">Download</button>
                                 </div>
-                                <div id="warning" class="alert alert-danger" role="alert">Too many file selected. Max is 3.</div>
+                                <input id="upload-input-ref" type="file" name="uploads" onchange="displayFilesRef()"></br>
                                 <input id="upload-input-query" type="file" name="uploads" onchange="displayFilesQuery()"></br>
                             </div>
                         </div>
                     </div>
                     <!-- OUTPUT PANEL -->
-                    <div class="col-xs-6 col-md-6">
+                    <div class="col-xs-9 col-md-9">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
                                <h3 class="panel-title">Output</h3>
