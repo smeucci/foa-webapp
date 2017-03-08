@@ -159,12 +159,16 @@ function parseData (data) {
 }
 
 function selectTestFiles (num) {
-    var query = "SELECT pathtoxml, brand, model, os, version FROM VideoFileTest LIMIT " + num + "";
+    var query = "SELECT VideoFileTest.pathtoxml, DeviceModel.brand, DeviceModel.model, OperatingSystem.name, OperatingSystem.version"
+                 + " FROM VideoFileTest"
+                 + " LEFT JOIN DeviceModel ON DeviceModel.id = VideoFileTest.device_model"
+                 + " LEFT JOIN OperatingSystem ON OperatingSystem.id = VideoFileTest.operating_system"
+                 + " LIMIT " + num + ";";
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { console.log(err); return; }
             var videos = res.map(r => ({ filename: r.pathtoxml,
-                                         class: { brand: r.brand, model: r.model, os: r.os, version: r.version }
+                                         class: { brand: r.brand, model: r.model, os: r.name, version: r.version }
                                       }))
             return resolve(videos);
         });

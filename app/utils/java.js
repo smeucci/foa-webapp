@@ -41,7 +41,6 @@ function parse (folder) {
 function compare (ref, query, folder) {
     return new Promise (function (resolve, reject) {
         var folderpath = path.join(upload.uploadsDir(), folder);
-        console.log(ref)
         var refpath = (ref.endsWith(".xml")) ? path.join(folderpath, ref) : path.join(folderpath, ref + ".xml");
         var querypath = (query.endsWith(".xml")) ? path.join(folderpath, query) : path.join(folderpath, query + ".xml");
         var cmd = "/usr/bin/java -jar " + vft + " -c -i " + refpath + " -i2 " + querypath;
