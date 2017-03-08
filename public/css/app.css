@@ -12,6 +12,7 @@ body {
 div.container {
 	margin-top: 20px;
 	width: 90%;
+    height: 800px;
 }
 
 div#myjumbotron {
@@ -52,7 +53,8 @@ label[for=jar-btn] {
 }
 
 div.well {
-	height: 55%;
+	height: 275px;
+    margin-bottom: 10px;
 }
 
 div.well p {
