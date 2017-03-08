@@ -55,7 +55,8 @@ function resetProgressBar () {
     $('.progress-bar').text('0%');
     $('.progress-bar').width('0%');
     $('#files').text('No file chosen');
-    document.getElementById("warning").style.display = "none";
+    var warning = document.getElementById("warning");
+    if (warning != null) { document.getElementById("warning").style.display = "none"; }
 }
 
 function resetProgressBarRef () {
@@ -63,7 +64,8 @@ function resetProgressBarRef () {
     $('.progress-bar').text('0%');
     $('.progress-bar').width('0%');
     $('#files-ref').text('No file chosen');
-    document.getElementById("warning").style.display = "none";
+    var warning = document.getElementById("warning");
+    if (warning != null) { document.getElementById("warning").style.display = "none"; }
 }
 
 function resetProgressBarQuery () {
@@ -71,7 +73,8 @@ function resetProgressBarQuery () {
     $('.progress-bar').text('0%');
     $('.progress-bar').width('0%');
     $('#files-query').text('No file chosen');
-    document.getElementById("warning").style.display = "none";
+    var warning = document.getElementById("warning");
+    if (warning != null) { document.getElementById("warning").style.display = "none"; }
 }
 
 function cleanOutput () {
@@ -205,6 +208,8 @@ function querytest () {
 function comparet () {
     var ref = $('#upload-input-ref').get(0).files[0];
     var query = $('#upload-input-query').get(0).files[0];
+
+    if (ref == null || query == null) { return; }
 
     var formData = new FormData();
     formData.append('info',  '{ "ref": "' + ref.name + '", "query": "' + query.name + '" }');
