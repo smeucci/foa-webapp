@@ -125,10 +125,20 @@ function displayResults (results) {
 }
 
 function displayStats (stats) {
-    var correct = ((stats.TP + stats.TN) / (stats.TP + stats.TN + stats.FP + stats.FN)) * 100;
-    var data = "## stats ## TP: " + stats.TP + ", TN: " + stats.TN
-             + ", FP: " + stats.FP + ", FN: " + stats.FN + ", Correct: " + correct + "%";
-    $(".well").append("<p><b>" + data + "</b></p>");
+    var data = "";
+    if (stats.top === undefined) {
+        var correct = ((stats.TP + stats.TN) / (stats.TP + stats.TN + stats.FP + stats.FN)) * 100;
+        data = "## stats ## TP: " + stats.TP + ", TN: " + stats.TN
+                 + ", FP: " + stats.FP + ", FN: " + stats.FN + ", Correct: " + correct + "%";
+        $(".well").append("<p><b>" + data + "</b></p>");
+    } else {
+        data = "# Brands # TOP 1: " + stats.top.brands.one * 100 + "%, TOP 3: " + stats.top.brands.three * 100 + "%,"
+                + "TOP 5: " + stats.top.brands.five * 100 + "%";
+        $(".well").append("<p><b>" + data + "</b></p>");
+        data = "# Models # TOP 1: " + stats.top.models.one * 100 + "%, TOP 3: " + stats.top.models.three * 100 + "%,"
+                + "TOP 5: " + stats.top.models.five * 100 + "%";
+        $(".well").append("<p><b>" + data + "</b></p>");
+    }
 }
 
 function displayCompare (data) {
