@@ -65,12 +65,25 @@ function compareClass (target, prediction) {
     if (prediction.model == 'Any') {
         equal = isEqual(target.brand, prediction.brand);
     } else if (prediction.os == 'Any' || target.os == 'null null') {
-        equal = isEqual(target.brand + target.model, prediction.brand + prediction.model)
+        equal = isEqual(target.brand + target.model, prediction.brand + prediction.model);
     } else {
         equal = isEqual(target.brand + target.model + target.os + target.version,
-                        prediction.brand + prediction.model + prediction.name + prediction.version)
+                        prediction.brand + prediction.model + prediction.name + prediction.version);
     }
     return equal;
+}
+
+function compareClassBrand (target, prediction) {
+    return isEqual(target.brand, prediction.brand);
+}
+
+function compareClassBrandModel (target, prediction) {
+    return isEqual(target.brand + target.model, prediction.brand + prediction.model);
+}
+
+function compareClassBrandModelOS (target, prediction) {
+    return isEqual(target.brand + target.model + target.os + target.version,
+                    prediction.brand + prediction.model + prediction.name + prediction.version);
 }
 
 function updateStats (a, b, stats) {
@@ -110,6 +123,52 @@ function parseConfig (config) {
     return configObject;
 }
 
+function ROCSetup (testfiles) {
+    testfiles.forEach(function (t) {
+        t.results.forEach(function (res) {
+            var likelihood = res.loglikelihood;
+            var label = (compareClass(t.class, res.class) == true) ? 1 : 0;
+            var output = likelihood + ";" + label + "\n";
+            fs.appendFile("/home/saverio/Projects/Tests/SourceIdentification/compares.txt", output, 'utf8', function () {});
+        })
+    })
+}
+
+function computeTopX (testfiles) {
+    var TOP = { brands: {one: 0, three: 0, five: 0},
+                models: {one: 0, three: 0, five: 0} };
+    testfiles.forEach(function (t) {
+        var i = 0;
+        var flag1 = false;
+        while (i < 5 && flag1 == false) {
+            var label = (compareClassBrand(t.class, t.results[i].class) == true) ? 1 : 0;
+            if (i == 0 && label == 1) { TOP.brands.one += 1; }
+            if (i < 3 && label == 1) { TOP.brands.three += 1; }
+            if (i < 5 && label == 1) { TOP.brands.five += 1; }
+            if (label == 1) { flag1 = true; }
+            i += 1;
+        }
+
+        var j = 0;
+        var flag2 = false;
+        while (j < 5 && flag2 == false) {
+            var label = (compareClassBrandModel(t.class, t.results[j].class) == true) ? 1 : 0;
+            if (j == 0 && label == 1) { TOP.models.one += 1; }
+            if (j < 3 && label == 1) { TOP.models.three += 1; }
+            if (j < 5 && label == 1) { TOP.models.five += 1; }
+            if (label == 1) { flag2 = true; }
+            j += 1;
+        }
+    })
+    TOP.brands.one = TOP.brands.one / testfiles.length;
+    TOP.brands.three = TOP.brands.three / testfiles.length;
+    TOP.brands.five = TOP.brands.five / testfiles.length;
+    TOP.models.one = TOP.models.one / testfiles.length;
+    TOP.models.three = TOP.models.three / testfiles.length;
+    TOP.models.five = TOP.models.five / testfiles.length;
+    return TOP;
+}
+
 // exports
 module.exports = {
     isEmpty,
@@ -117,5 +176,7 @@ module.exports = {
     setupTest,
     sortLikelihoods,
     computeStats,
-    parseConfig
+    parseConfig,
+    ROCSetup,
+    computeTopX
 }

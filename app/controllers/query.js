@@ -32,10 +32,15 @@ var querytest = async function (req, res) {
     var setup = await utils.setupTest(req, folder);
     // get test filenames from db
     setup.filenames = await db.selectTestFiles(5);
+    if (classIsAllAny(setup.class)) {setup.auto = true}
     // compute likelihoods
     var results = await run(folder, setup);
     // compute stats
     var stats = utils.computeStats(results);
+    if (setup.auto) {
+        utils.ROCSetup(results);
+        stats.top = utils.computeTopX(results);
+    }
     // return
     res.json({success: setup.success, folder: folder, results: results, stats: stats});
 }
