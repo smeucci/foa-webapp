@@ -32,6 +32,8 @@ function sortLikelihoods (likelihoods) {
         likelihoods[i].results.sort(function (a, b) {
             if (a.loglikelihood < b.loglikelihood) { return 1; }
             else if (a.loglikelihood == b.loglikelihood) { return 0; }
+            else if (a.loglikelihood === '-INFINITY') { return 1; }
+            else if (b.loglikelihood === '-INFINITY') { return -1; }
             else { return -1; }
         });
     }
