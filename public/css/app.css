@@ -69,3 +69,21 @@ div#warning {
 	margin-top: 10px;
 	display: none;
 }
+
+div.well p.fields {
+    font-size: 12px;
+    display: none;
+}
+
+.compare, .extra {
+    float: left;
+}
+
+.clearfix {
+    clear: both;
+}
+
+button.extra {
+    margin-left: 5px;
+    height: 15px;
+}

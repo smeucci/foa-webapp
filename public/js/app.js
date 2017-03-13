@@ -74,7 +74,7 @@ function resetProgressBarQuery () {
     $('.progress-bar').width('0%');
     $('#files-query').text('No file chosen');
     var warning = document.getElementById("warning");
-    if (warning != null) { document.getElementById("warning").style.display = "none"; }
+    if (warning != null) { warning.style.display = "none"; }
 }
 
 function cleanOutput () {
@@ -133,19 +133,51 @@ function displayStats (stats) {
         $(".well").append("<p><b>" + data + "</b></p>");
     } else {
         data = "# Brands # TOP 1: " + stats.top.brands.one * 100 + "%, TOP 3: " + stats.top.brands.three * 100 + "%,"
-                + "TOP 5: " + stats.top.brands.five * 100 + "%";
+                + " TOP 5: " + stats.top.brands.five * 100 + "%";
         $(".well").append("<p><b>" + data + "</b></p>");
         data = "# Models # TOP 1: " + stats.top.models.one * 100 + "%, TOP 3: " + stats.top.models.three * 100 + "%,"
-                + "TOP 5: " + stats.top.models.five * 100 + "%";
+                + " TOP 5: " + stats.top.models.five * 100 + "%";
         $(".well").append("<p><b>" + data + "</b></p>");
     }
 }
 
 function displayCompare (data) {
     $(".well").append("<p><b>" + "# reference: " + data.rq.reference + ", query: " + data.rq.query + "</b></p>");
-    $(".well").append("<p>" + "- diff: " + data.rq.diff + ", tot: " + data.rq.tot + "</p>");
+    $(".well").append("<p class='compare'>" + "- diff: " + data.rq.diff + ", tot: "
+     + data.rq.tot + "</p> <button class='btn btn-primary btn-xs extra' onclick='showExtraRef()'>+</button>");
+    $(".well").append("<div class='clearfix'></div>");
+    var fields = data.rq.fields.split(";");
+    fields.pop();
+    fields.forEach(function (f, i) {
+        $(".well").append("<p id='ref' class='fields'> > "+ f +"</p>");
+    })
     $(".well").append("<p><b>" + "# reference: " + data.qr.reference + ", query: " + data.qr.query + "</b></p>");
-    $(".well").append("<p>" + "- diff: " + data.qr.diff + ", tot: " + data.qr.tot + "</p>");
+    $(".well").append("<p class='compare'>" + "- diff: " + data.qr.diff + ", tot: "
+     + data.qr.tot + "</p> <button class='btn btn-primary btn-xs extra' onclick='showExtraQuery()'>+</button>");
+     $(".well").append("<div class='clearfix'></div>");
+    fields = data.qr.fields.split(";");
+    fields.pop();
+    fields.forEach(function (f) {
+        $(".well").append("<p id='query' class='fields'> > "+ f +"</p>");
+    })
+}
+
+function showExtraRef () {
+    var display = $("#ref.fields").css("display");
+    if (display === 'none') {
+        $("#ref.fields").css("display", "block");
+    } else {
+        $("#ref.fields").css("display", "none");
+    }
+}
+
+function showExtraQuery () {
+    var display = $("#query.fields").css("display");
+    if (display === 'none') {
+        $("#query.fields").css("display", "block");
+    } else {
+        $("#query.fields").css("display", "none");
+    }
 }
 
 function query () {
