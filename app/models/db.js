@@ -14,7 +14,7 @@ function selectBrands () {
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { console.log(err); return; }
-            var brands = res.map(r => ({value: r.brand, text: r.brand}))
+            var brands = res.map(r => ({value: r.brand, text: r.brand}));
             return resolve(brands);
         });
     })
@@ -25,7 +25,7 @@ function selectModels (data) {
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { console.log(err); return; }
-            var models = res.map(r => ({value: r.model, text: r.model}))
+            var models = res.map(r => ({value: r.model, text: r.model}));
             return resolve(models);
         });
     })
@@ -42,7 +42,7 @@ function selectOS (data) {
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { console.log(err); return; }
-            var os = res.map(r => ({ value: r.name + "-" + r.version, text: r.name + " " + r.version }))
+            var os = res.map(r => ({ value: r.name + "-" + r.version, text: r.name + " " + r.version }));
             return resolve(os);
         });
     })
@@ -59,7 +59,7 @@ function selectClassA (data) {
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { console.log(err); return; }
-            var videos = res.map(r => ({ video: r.pathtoxml }))
+            var videos = res.map(r => ({ video: r.pathtoxml }));
             return resolve(videos);
         });
     })
@@ -86,7 +86,7 @@ function selectBrandModelOS (data) {
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { console.log(err); return; }
-            var videos = res.map(r => ({ video: r.pathtoxml }))
+            var videos = res.map(r => ({ video: r.pathtoxml }));
             return resolve(videos);
         });
     })
@@ -99,7 +99,7 @@ function selectBrandModel (data) {
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { console.log(err); return; }
-            var videos = res.map(r => ({ video: r.pathtoxml }))
+            var videos = res.map(r => ({ video: r.pathtoxml }));
             return resolve(videos);
         });
     })
@@ -113,7 +113,7 @@ function selectBrandOSNameVersion (data) {
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { console.log(err); return; }
-            var videos = res.map(r => ({ video: r.pathtoxml }))
+            var videos = res.map(r => ({ video: r.pathtoxml }));
             return resolve(videos);
         });
     })
@@ -129,7 +129,7 @@ function selectBrandOSName (data) {
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { console.log(err); return; }
-            var videos = res.map(r => ({ video: r.pathtoxml }))
+            var videos = res.map(r => ({ video: r.pathtoxml }));
             return resolve(videos);
         });
     })
@@ -141,7 +141,7 @@ function selectBrand (data) {
     return new Promise (function (resolve, reject) {
         db.all(query, function (err, res) {
             if (err) { console.log(err); return; }
-            var videos = res.map(r => ({ video: r.pathtoxml }))
+            var videos = res.map(r => ({ video: r.pathtoxml }));
             return resolve(videos);
         });
     })
@@ -169,9 +169,31 @@ function selectTestFiles (num) {
             if (err) { console.log(err); return; }
             var videos = res.map(r => ({ filename: r.pathtoxml,
                                          class: { brand: r.brand, model: r.model, os: r.name, version: r.version }
-                                      }))
+                                     }));
             return resolve(videos);
         });
+    })
+}
+
+function selectBrandModelIDs () {
+    var query = "SELECT id FROM DeviceModel;";
+    return new Promise (function (resolve, reject) {
+        db.all(query, function (err, res) {
+            if (err) {console.log(err); return; }
+            var ids = res.map(r => ({id: r.id}));
+            resolve(ids);
+        })
+    })
+}
+
+function selectVideosByBrandModelID (id) {
+    var query = "SELECT pathtoxml, pathtofile, pathtoinfo FROM VideoFile WHERE device_model = " + id + " LIMIT 3;";
+    return new Promise (function (resolve, reject) {
+        db.all(query, function (err, res) {
+            if (err) {console.log(err); return; }
+            var videos = res.map(r => ({pathtofile: r.pathtofile, pathtoxml: r.pathtoxml, pathtoinfo: r.pathtoinfo}));
+            resolve(videos);
+        })
     })
 }
 
@@ -182,5 +204,7 @@ module.exports = {
     selectOS,
     selectClassA,
     selectClassB,
-    selectTestFiles
+    selectTestFiles,
+    selectBrandModelIDs,
+    selectVideosByBrandModelID
 };
