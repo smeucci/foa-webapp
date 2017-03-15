@@ -31,7 +31,7 @@ var querytest = async function (req, res) {
     // parse req and mkdir folder
     var setup = await utils.setupTest(req, folder);
     // get test filenames from db
-    setup.filenames = await db.selectTestFiles(5);
+    setup.filenames = await db.selectTestFiles(39);
     if (classIsAllAny(setup.class)) {setup.auto = true}
     // compute likelihoods
     var results = await run(folder, setup);

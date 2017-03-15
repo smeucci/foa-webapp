@@ -59,9 +59,13 @@ function test (folder, configfolder, filename) {
         var filepath = filename.endsWith(".xml") ? filename : filename.concat(".xml");
         var cmd = "/usr/bin/java -jar " + foa + " --test -cA " + configA + " -cB " + configB + " -i " + filepath;
         var child = spawn(cmd, {shell: true});
+        console.log(cmd)
         child.stdout.on('data', function (data) {
             var res = JSON.parse(data.toString().replace(/(\r\n|\n|\r)/gm,""));
             return resolve(res);
+        });
+        child.on('error', function (data) {
+            console.log(data);
         });
     });
 }

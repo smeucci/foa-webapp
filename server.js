@@ -46,9 +46,13 @@ app.get('/init', sqlite.initDB);
 app.get('/update', sqlite.updateDB);
 app.get('/train', train.train);
 
+app.get('/dataset', sqlite.divideDB);
+
 app.listen(port, function () {
     console.log('Listening on port ' + port + '...');
-});
+}).on('connection', function(socket) {
+  socket.setTimeout(5 * 60 * 1000);
+})
 
 // exports
 module.exports = app;
