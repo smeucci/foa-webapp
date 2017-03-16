@@ -180,65 +180,90 @@ function showExtraQuery () {
     }
 }
 
+function addDots () {
+    var dots = $("#output.well");
+    if (dots.text() === '') {
+        dots.text('.');
+    } else if (dots.text() === '.') {
+        dots.text('..');
+    } else if (dots.text() === '..') {
+        dots.text('...');
+    } else if (dots.text() === '...') {
+        dots.text('');
+    }
+}
+
 function query () {
-  var files = $('#upload-input').get(0).files;
 
-  // limit max number of files that can be uploaded per time
-  if (files.length > 3) { $('#upload-input').value = ''; return; }
+    var files = $('#upload-input').get(0).files;
 
-  var brand = $( "#sel-brands option:selected" ).val();
-  var model = $( "#sel-models option:selected" ).val();
-  var os = $( "#sel-os option:selected" ).val();
-  var device = '{ "brand": "' + brand + '", ' + '"model": "' + model + '", "os": "' + os + '"}';
+    // limit max number of files that can be uploaded per time
+    if (files.length > 3) { $('#upload-input').value = ''; return; }
 
-  if (files.length > 0) {
-      var formData = new FormData();
-      formData.append('class', device)
-      for (var i = 0; i < files.length; i++) {
-          var file = files[i];
-          formData.append('uploads[]', file, file.name);
-      }
-      $.post({
-          url: '/query',
-          data: formData,
-          mimeType:'multipart/form-data',
-          processData: false,
-          contentType: false,
-          success: function (data) {
-              $(".well").text("");
-              data = JSON.parse(data);
-              console.log(data);
-              console.log('Upload success: ' + data.success);
-              displayResults(data.results);
-          },
-          xhr: function () {
-              var xhr = new XMLHttpRequest();
-              xhr.upload.addEventListener('progress', function(evt) {
-                  if (evt.lengthComputable) {
-                      var percentComplete = evt.loaded / evt.total;
-                      percentComplete = parseInt(percentComplete * 100);
+    var brand = $( "#sel-brands option:selected" ).val();
+    var model = $( "#sel-models option:selected" ).val();
+    var os = $( "#sel-os option:selected" ).val();
+    var device = '{ "brand": "' + brand + '", ' + '"model": "' + model + '", "os": "' + os + '"}';
 
-                      $('.progress-bar').text(percentComplete + '%');
-                      $('.progress-bar').width(percentComplete + '%');
+    if (files.length > 0) {
 
-                      if (percentComplete === 100) {
-                          $('.progress-bar').html('Done');
-                      }
-                  }
-              }, false);
-              return xhr;
-          }
-      });
+        addDots();
+        var interval = setInterval(addDots, 500);
+
+        var formData = new FormData();
+        formData.append('class', device)
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            formData.append('uploads[]', file, file.name);
+        }
+
+        $.post({
+            url: '/query',
+            data: formData,
+            mimeType:'multipart/form-data',
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                clearInterval(interval);
+                $(".well").text("");
+                data = JSON.parse(data);
+                console.log(data);
+                console.log('Upload success: ' + data.success);
+                displayResults(data.results);
+            },
+            xhr: function () {
+                var xhr = new XMLHttpRequest();
+                xhr.upload.addEventListener('progress', function(evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = evt.loaded / evt.total;
+                        percentComplete = parseInt(percentComplete * 100);
+
+                        $('.progress-bar').text(percentComplete + '%');
+                        $('.progress-bar').width(percentComplete + '%');
+
+                        if (percentComplete === 100) {
+                            $('.progress-bar').html('Done');
+                        }
+                    }
+                }, false);
+                return xhr;
+            }
+        });
     }
 }
 
 function querytest () {
+
+    addDots();
+    var interval = setInterval(addDots, 500);
+
     var brand = $( "#sel-brands option:selected" ).val();
     var model = $( "#sel-models option:selected" ).val();
     var os = $( "#sel-os option:selected" ).val();
     var device = {brand: brand, model: model, os: os};
 
     $.get('/querytest', device, function (data) {
+        clearInterval(interval);
         $(".well").text("");
         console.log(data)
         console.log('Upload success: ' + data.success);
@@ -253,6 +278,9 @@ function comparet () {
 
     if (ref == null || query == null) { return; }
 
+    addDots();
+    var interval = setInterval(addDots, 500);
+
     var formData = new FormData();
     formData.append('info',  '{ "ref": "' + ref.name + '", "query": "' + query.name + '" }');
     formData.append('uploads[]', ref, ref.name);
@@ -265,6 +293,7 @@ function comparet () {
         processData: false,
         contentType: false,
         success: function (data) {
+            clearInterval(interval);
             $(".well").text("");
             data = JSON.parse(data);
             displayCompare(data);
