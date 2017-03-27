@@ -45,10 +45,14 @@ function compare (ref, query, folder) {
         var querypath = (query.endsWith(".xml")) ? path.join(folderpath, query) : path.join(folderpath, query + ".xml");
         var cmd = "/usr/bin/java -jar " + vft + " -c -i " + refpath + " -i2 " + querypath;
         var child = spawn(cmd, {shell: true});
-        child.stdout.on('data', function (data) {
-            var res = JSON.parse(data.toString().replace(/(\r\n|\n|\r)/gm,""));
-            return resolve(res);
+        var data = "";
+        child.stdout.on('data', function (chunck) {
+            data += chunck;
         });
+        child.on('exit', function () {
+            var res = JSON.parse(data);
+            return resolve(res);
+        })
     });
 }
 
@@ -64,6 +68,9 @@ function test (folder, configfolder, filename) {
             var res = JSON.parse(data.toString().replace(/(\r\n|\n|\r)/gm,""));
             return resolve(res);
         });
+        child.stderr.on('data', function (data) {
+            console.log(data.toString())
+        })
         child.on('error', function (data) {
             console.log(data);
         });
