@@ -146,20 +146,18 @@ function displayCompare (data) {
     $(".well").append("<p class='compare'>" + "- diff: " + data.rq.diff + ", tot: "
      + data.rq.tot + "</p> <button class='btn btn-primary btn-xs extra' onclick='showExtraRef()'>+</button>");
     $(".well").append("<div class='clearfix'></div>");
-    var fields = data.rq.fields.split(";");
-    fields.pop();
-    fields.forEach(function (f, i) {
-        $(".well").append("<p id='ref' class='fields'> > "+ f +"</p>");
+    data.rq.fields.forEach(function (f, i) {
+        var out = f.atom + ", " + f.field + ", REF: " + f.refValue + ", QUERY: " + f.queryValue;
+        $(".well").append("<p id='ref' class='fields'> > "+ out +"</p>");
     })
     $(".well").append("<p><b>" + "# reference: " + data.qr.reference + ", query: " + data.qr.query + "</b></p>");
     $(".well").append("<p class='compare'>" + "- diff: " + data.qr.diff + ", tot: "
      + data.qr.tot + "</p> <button class='btn btn-primary btn-xs extra' onclick='showExtraQuery()'>+</button>");
      $(".well").append("<div class='clearfix'></div>");
-    fields = data.qr.fields.split(";");
-    fields.pop();
-    fields.forEach(function (f) {
-        $(".well").append("<p id='query' class='fields'> > "+ f +"</p>");
-    })
+     data.qr.fields.forEach(function (f, i) {
+         var out = f.atom + ", " + f.field + ", REF: " + f.refValue + ", QUERY: " + f.queryValue;
+         $(".well").append("<p id='query' class='fields'> > "+ out +"</p>");
+     })
 }
 
 function showExtraRef () {
