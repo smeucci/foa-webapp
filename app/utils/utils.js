@@ -56,7 +56,7 @@ function computeStats (testfiles) {
     testfiles.forEach(function (t) {
         var res = t.results[0];
         var equal = compareClass(t.class, res.class);
-        var positive = (res.loglikelihood > 0) ? true : false;
+        var positive = (res.loglikelihood > 0 || res.loglikelihood === "INFINITY") ? true : false;
         stats = updateStats(equal, positive, stats);
     })
     return stats;
@@ -126,45 +126,62 @@ function parseConfig (config) {
 }
 
 function ROCSetup (testfiles) {
+    var outputBrands = "";
+    var outputModels = "";
     testfiles.forEach(function (t) {
         t.results.forEach(function (res) {
-            var likelihood = res.loglikelihood;
+            var likelihood;
+            if (res.loglikelihood === "INFINITY") {
+                likelihood = 1000;
+            } else if (res.loglikelihood === "-INFINITY") {
+                likelihood = -1000;
+            } else {
+                likelihood = res.loglikelihood;
+            }
             var label = (compareClass(t.class, res.class) == true) ? 1 : 0;
-            var output = likelihood + ";" + label + "\n";
-            fs.appendFile("/home/saverio/Projects/Tests/SourceIdentification/compares.txt", output, 'utf8', function () {});
+            var tclass = t.class.brand + t.class.model + t.class.os;
+            var resclass = res.class.brand + res.class.model + res.class.os;
+            var output = tclass + ";" + resclass + ";" + likelihood + ";" + label + "\n";
+            if (res.class.model === "Any") {
+                outputBrands = outputBrands + output;
+            } else {
+                outputModels = outputModels + output;
+            }
         })
     })
+    fs.appendFile("/home/saverio/Projects/Tests/SourceIdentification/compare_brands.txt", outputBrands, 'utf8', function () {});
+    fs.appendFile("/home/saverio/Projects/Tests/SourceIdentification/compare_models.txt", outputModels, 'utf8', function () {});
 }
 
 function computeTopX (testfiles) {
-    var TOP = { brands: {one: 0, three: 0, five: 0},
+    var TOP = { brands: {one: 0},
                 models: {one: 0, three: 0, five: 0} };
     testfiles.forEach(function (t) {
-        var i = 0;
-        var flag1 = false;
-        while (i < 5 && flag1 == false) {
-            var label = (compareClassBrand(t.class, t.results[i].class) == true) ? 1 : 0;
-            if (i == 0 && label == 1) { TOP.brands.one += 1; }
-            if (i < 3 && label == 1) { TOP.brands.three += 1; }
-            if (i < 5 && label == 1) { TOP.brands.five += 1; }
-            if (label == 1) { flag1 = true; }
-            i += 1;
-        }
 
-        var j = 0;
-        var flag2 = false;
-        while (j < 5 && flag2 == false) {
-            var label = (compareClassBrandModel(t.class, t.results[j].class) == true) ? 1 : 0;
-            if (j == 0 && label == 1) { TOP.models.one += 1; }
-            if (j < 3 && label == 1) { TOP.models.three += 1; }
-            if (j < 5 && label == 1) { TOP.models.five += 1; }
-            if (label == 1) { flag2 = true; }
-            j += 1;
+        var i = 0;
+        var numBrandOnly = 0;
+        var flag = false;
+        var flagBrand = false;
+        while (i < t.results.length || flag == false) {
+            if (t.results[i].class.model === "Any") {
+                if (flagBrand == false) {
+                    var label = (compareClassBrand(t.class, t.results[i].class) == true) ? 1 : 0;
+                    if (label == 1) { TOP.brands.one += 1; }
+                    flagBrand = true;
+                }
+                numBrandOnly += 1;
+            } else {
+                var label = (compareClassBrandModel(t.class, t.results[i].class) == true) ? 1 : 0;
+                if (i == 0 + numBrandOnly && label == 1) { TOP.models.one += 1; }
+                if (i < 3 + numBrandOnly && label == 1) { TOP.models.three += 1; }
+                if (i < 5 + numBrandOnly && label == 1) { TOP.models.five += 1; }
+                if (label == 1) { flag = true; }
+            }
+            i += 1;
         }
     })
     TOP.brands.one = TOP.brands.one / testfiles.length;
-    TOP.brands.three = TOP.brands.three / testfiles.length;
-    TOP.brands.five = TOP.brands.five / testfiles.length;
+
     TOP.models.one = TOP.models.one / testfiles.length;
     TOP.models.three = TOP.models.three / testfiles.length;
     TOP.models.five = TOP.models.five / testfiles.length;
